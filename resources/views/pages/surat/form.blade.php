@@ -5,7 +5,7 @@
 
 @section('content')
 
-<div class="page-hero page-hero--green">
+<div class="page-hero page-hero--primary">
     <div class="container">
         <nav class="breadcrumb">
             <a href="{{ route('landing') }}">Beranda</a>
@@ -57,7 +57,6 @@
                     <span class="form-card__num">1</span>
                     <div>
                         <h2 class="form-card__title">Jenis Surat</h2>
-                        <p class="form-card__desc">Ketik jenis surat yang Anda perlukan, contoh: <em>Surat Keterangan Domisili</em>, <em>Surat Keterangan Tidak Mampu</em>, dll.</p>
                     </div>
                 </div>
                 <div class="form-card__body">
@@ -71,7 +70,6 @@
                         @error('jenis_surat')
                             <p class="form-error">{{ $message }}</p>
                         @enderror
-                        <p class="form-hint">Teks ini akan muncul sebagai judul surat yang dicetak.</p>
                     </div>
 
                     {{-- Contoh cepat --}}
@@ -235,12 +233,12 @@
             </div>
 
             {{-- Submit --}}
-            <div class="form-submit-area">
-                <p class="form-disclaimer">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div style="margin-top: 12px;">
+                <p class="preview-alert" style="margin-bottom: 20px; font-size: 14px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                     Dengan mengajukan permohonan ini, saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.
                 </p>
-                <button type="submit" class="btn btn--primary btn--lg btn--full" id="submitBtn">
+                <button type="submit" class="btn-submit" id="submitBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
                     Generate Surat Keterangan
                 </button>

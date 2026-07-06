@@ -33,9 +33,9 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ---- Profil Desa: Tab switching ----
-    const tabBtns   = document.querySelectorAll('.profil__tab-btn');
-    const tabPanels = document.querySelectorAll('.profil__tab-panel');
+    // ---- Profil Desa: Tab switching (supports both .profil__tab-btn and .p-tab) ----
+    const tabBtns   = document.querySelectorAll('.profil__tab-btn, .p-tab');
+    const tabPanels = document.querySelectorAll('.profil__tab-panel, .p-panel');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const target = btn.dataset.tab;
@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (panel) panel.classList.add('active');
         });
     });
+
 
     // ---- Scroll Reveal ----
     const reveals = document.querySelectorAll('.reveal');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Intervention\Image\ImageManager;
+use Intervention\Image\Encoders\JpegEncoder;
 use Intervention\Image\Drivers\Gd\Driver;
 
 class SuratController extends Controller
@@ -21,10 +22,10 @@ class SuratController extends Controller
             mkdir(storage_path('app/surat'), 0775, true);
         }
 
-        $counter = file_exists($counterFile) ? (int) file_get_contents($counterFile) + 1 : 1;
+        $counter = file_exists($counterFile) ? (int) file_get_contents($counterFile) + 1 : 0;
         file_put_contents($counterFile, $counter);
 
-        return "470/{$counter}.404.617.12/{$year}";
+        return "470/{$counter}/404.617.12/{$year}";
     }
 
     // ---------------------------------------------------------------
@@ -122,6 +123,8 @@ class SuratController extends Controller
     }
 
     // ---------------------------------------------------------------
+    // DOWNLOAD — generate PDF dan return sebagai download
+    // ---------------------------------------------------------------
     // DOWNLOAD — generate JPG dan return sebagai download
     // ---------------------------------------------------------------
     public function download(string $id, Request $request)
@@ -140,116 +143,126 @@ class SuratController extends Controller
 
         $filename = 'Surat_' . preg_replace('/[^a-zA-Z0-9]/', '_', $data['nomor_surat']) . '.jpg';
 
-        return response($image->toJpeg(95))
+        return response((string) $image->encode(new JpegEncoder(95)))
             ->header('Content-Type', 'image/jpeg')
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 
     // ---------------------------------------------------------------
-    // BUILD SURAT IMAGE — generate canvas A4 persis seperti template
+    // BUILD SURAT IMAGE — A4 @150 DPI (1240x1754), margin 2.54cm=150px
+    // Semua koordinat disesuaikan agar semirip mungkin dengan preview CSS
     // ---------------------------------------------------------------
-    protected function buildSuratImage(array $data, string $ttd): \Intervention\Image\Image
+    protected function buildSuratImage(array $data, string $ttd): \Intervention\Image\Interfaces\ImageInterface
     {
         $manager = new ImageManager(new Driver());
 
-        // Canvas A4 @ ~150 DPI: 1240 x 1754
-        $W = 1240;
-        $H = 1900; // sedikit lebih tinggi agar tidak terpotong
-        $img = $manager->create($W, $H)->fill('ffffff');
+        // A4 @150 DPI: 1240 x 1754px
+        $W   = 1240;
+        $H   = 1754;
+        $img = $manager->createImage($W, $H)->fill('ffffff');
+
+        // Margin 2.54cm = 1 inch = 150px @150DPI (sama dengan padding: 2.54cm di CSS)
+        $mL  = 150;           // margin kiri
+        $mR  = $W - 150;      // margin kanan
+        $mT  = 150;           // margin atas
+        $cX  = $W / 2;        // center X
 
         $fontR = $this->fontRegular();
+        $fontI = file_exists('C:/Windows/Fonts/timesi.ttf') ? 'C:/Windows/Fonts/timesi.ttf' : $fontR;
         $fontB = $this->fontBold();
         $black = '000000';
-        $mL    = 100; // margin kiri
-        $mR    = $W - 100; // margin kanan
-        $cX    = $W / 2; // center X
 
         // ================================================================
         // HEADER — KOP SURAT
+        // Logo: sama tinggi proporsi dengan preview (kop ~120px tinggi di CSS)
         // ================================================================
-        $logoPath = public_path('images/logo-ngawi.png');
+        $logoPath = public_path('images/Lambang_Kabupaten_Ngawi.png');
         if (file_exists($logoPath)) {
-            $logo = $manager->read($logoPath)->scale(height: 110);
-            $img->place($logo, 'top-left', $mL, 30);
+            $logo = $manager->decode($logoPath)->scale(height: 118);
+            $img->insert($logo, $mL, $mT);
         }
 
-        // Teks kop (centered)
-        $img->text('PEMERINTAH KABUPATEN NGAWI', $cX, 32, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(20); $f->color($black);
-            $f->align('center'); $f->valign('top');
+        // Teks kop centered (font size dalam pt × 2 karena 150 DPI vs 96 DPI)
+        // Preview CSS: 14pt bold → di 150DPI ≈ size 22
+        $yKop = $mT;
+        $img->text('PEMERINTAH KABUPATEN NGAWI', $cX, $yKop, function ($f) use ($fontB, $black) {
+            $f->file($fontB); $f->size(22); $f->color($black);
+            $f->align('center', 'top');
         });
-        $img->text('KECAMATAN KEDUNGGALAR', $cX, 58, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(20); $f->color($black);
-            $f->align('center'); $f->valign('top');
+        $img->text('KECAMATAN KEDUNGGALAR', $cX, $yKop + 30, function ($f) use ($fontB, $black) {
+            $f->file($fontB); $f->size(22); $f->color($black);
+            $f->align('center', 'top');
         });
-        $img->text('DESA PELANG LOR', $cX, 86, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(34); $f->color($black);
-            $f->align('center'); $f->valign('top');
+        // Preview: "DESA PELANG LOR" pakai h2 ~24pt → size 36
+        $img->text('DESA PELANG LOR', $cX, $yKop + 62, function ($f) use ($fontB, $black) {
+            $f->file($fontB); $f->size(36); $f->color($black);
+            $f->align('center', 'top');
         });
-        $img->text('Jln. Raya Solo-Ngawi KM 18 Ngawi  Kode Pos 63254', $cX, 128, function ($f) use ($fontR, $black) {
-            $f->filename($fontR); $f->size(14); $f->color($black);
-            $f->align('center'); $f->valign('top');
+        // Preview: alamat ~10pt → size 16
+        $img->text('Jln. Raya Solo-Ngawi KM 18 Ngawi  Kode Pos 63254', $cX, $yKop + 106, function ($f) use ($fontR, $black) {
+            $f->file($fontR); $f->size(16); $f->color($black);
+            $f->align('center', 'top');
         });
 
-        // Garis pemisah header
-        $y1 = 152;
+        // Garis: tebal 5px + tipis 1px (sama dengan CSS border-top + border-bottom)
+        $y1 = $mT + 132;
         $img->drawLine(function ($d) use ($mL, $mR, $y1, $black) {
             $d->from($mL, $y1)->to($mR, $y1)->color($black)->width(5);
         });
-        $y2 = 160;
+        $y2 = $mT + 140;
         $img->drawLine(function ($d) use ($mL, $mR, $y2, $black) {
             $d->from($mL, $y2)->to($mR, $y2)->color($black)->width(2);
         });
 
         // ================================================================
-        // JUDUL SURAT
+        // JUDUL SURAT (~14pt bold = size 22 @150DPI)
         // ================================================================
-        $yJudul = 185;
+        $yJudul = $mT + 165;
         $judulText = $data['jenis_surat'];
         $img->text($judulText, $cX, $yJudul, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(20); $f->color($black);
-            $f->align('center'); $f->valign('top');
+            $f->file($fontB); $f->size(22); $f->color($black);
+            $f->align('center', 'top');
         });
 
-        // Underline judul (estimasi lebar teks ~16px per karakter)
-        $judulLen  = strlen($judulText) * 11;
-        $underlineX1 = $cX - $judulLen / 2;
-        $underlineX2 = $cX + $judulLen / 2;
-        $img->drawLine(function ($d) use ($underlineX1, $underlineX2, $black) {
-            $yU = 208;
-            $d->from($underlineX1, $yU)->to($underlineX2, $yU)->color($black)->width(1);
+        // Underline judul (estimasi ~12px per char @150DPI)
+        $judulLen    = (int)(strlen($judulText) * 13);
+        $underlineX1 = (int)($cX - $judulLen / 2);
+        $underlineX2 = (int)($cX + $judulLen / 2);
+        $img->drawLine(function ($d) use ($underlineX1, $underlineX2, $yJudul, $black) {
+            $d->from($underlineX1, $yJudul + 26)->to($underlineX2, $yJudul + 26)->color($black)->width(1);
         });
 
-        // Nomor surat
-        $yNomor = 218;
-        $img->text('Nomor  :  ' . $data['nomor_surat'], $cX, $yNomor, function ($f) use ($fontR, $black) {
-            $f->filename($fontR); $f->size(15); $f->color($black);
-            $f->align('center'); $f->valign('top');
+        // Nomor surat italic (~11pt = size 17 @150DPI)
+        $yNomor = $yJudul + 35;
+        $img->text('Nomor  :  ' . $data['nomor_surat'], $cX, $yNomor, function ($f) use ($fontI, $black) {
+            $f->file($fontI); $f->size(18); $f->color($black);
+            $f->align('center', 'top');
         });
 
         // ================================================================
-        // PARAGRAF PEMBUKA
+        // PARAGRAF PEMBUKA (~12pt = size 18 @150DPI)
+        // Indent 30px (preview: text-indent via padding data-table)
         // ================================================================
-        $yBody = 262;
+        $yBody    = $yNomor + 55;
         $bodyText = 'Yang bertanda tangan di bawah ini Kami Kepala Desa Pelang Lor Kecamatan Kedunggalar Kabupaten Ngawi Jawa Timur menerangkan dengan sesungguhnya bahwa :';
-        $bodyLines = $this->wrapText($bodyText, 82);
+        $bodyLines = $this->wrapText($bodyText, 74);
         foreach ($bodyLines as $line) {
-            $img->text($line, $mL + 28, $yBody, function ($f) use ($fontR, $black) {
-                $f->filename($fontR); $f->size(15); $f->color($black);
-                $f->align('left'); $f->valign('top');
+            $img->text($line, $mL + 38, $yBody, function ($f) use ($fontR, $black) {
+                $f->file($fontR); $f->size(18); $f->color($black);
+                $f->align('left', 'top');
             });
-            $yBody += 22;
+            $yBody += 26;
         }
 
         // ================================================================
-        // DATA FIELDS — nomor 1-8 dan 10
+        // DATA FIELDS — indent sesuai preview table layout
         // ================================================================
-        $yData  = $yBody + 14;
-        $xNum   = $mL + 10;  // angka nomor
-        $xLabel = $mL + 30;  // label
-        $xColon = $mL + 260; // titik dua
-        $xValue = $mL + 278; // nilai
-        $lineH  = 26;
+        $yData  = $yBody + 16;
+        $xNum   = $mL + 8;    // nomor urut
+        $xLabel = $mL + 32;   // label kolom
+        $xColon = $mL + 310;  // titik dua
+        $xValue = $mL + 325;  // nilai
+        $lineH  = 28;
 
         $fields = [
             ['no' => '1.', 'label' => 'Nama',                       'value' => $data['nama']],
@@ -260,89 +273,69 @@ class SuratController extends Controller
             ['no' => '6.', 'label' => 'Agama',                      'value' => $data['agama']],
             ['no' => '7.', 'label' => 'Pekerjaan',                  'value' => $data['pekerjaan']],
             ['no' => '8.', 'label' => 'Alamat',                     'value' => $data['alamat']],
-            ['no' => '10.','label' => 'Keperluan',                   'value' => $data['keperluan']],
+            ['no' => '10.','label' => 'Keperluan',                  'value' => $data['keperluan']],
         ];
 
-        $maxValueWidth = 55; // karakter max per baris untuk kolom value
+        $maxValueWidth = 55;
         foreach ($fields as $field) {
-            // Nomor
             $img->text($field['no'], $xNum, $yData, function ($f) use ($fontR, $black) {
-                $f->filename($fontR); $f->size(15); $f->color($black);
-                $f->align('left'); $f->valign('top');
+                $f->file($fontR); $f->size(18); $f->color($black);
+                $f->align('left', 'top');
             });
-            // Label
             $img->text($field['label'], $xLabel, $yData, function ($f) use ($fontR, $black) {
-                $f->filename($fontR); $f->size(15); $f->color($black);
-                $f->align('left'); $f->valign('top');
+                $f->file($fontR); $f->size(18); $f->color($black);
+                $f->align('left', 'top');
             });
-            // Titik dua
             $img->text(':', $xColon, $yData, function ($f) use ($fontR, $black) {
-                $f->filename($fontR); $f->size(15); $f->color($black);
-                $f->align('left'); $f->valign('top');
+                $f->file($fontR); $f->size(18); $f->color($black);
+                $f->align('left', 'top');
             });
-            // Value (dengan wrapping)
             $valueLines = $this->wrapText($field['value'], $maxValueWidth);
             foreach ($valueLines as $vLine) {
                 $img->text($vLine, $xValue, $yData, function ($f) use ($fontR, $black) {
-                    $f->filename($fontR); $f->size(15); $f->color($black);
-                    $f->align('left'); $f->valign('top');
+                    $f->file($fontR); $f->size(18); $f->color($black);
+                    $f->align('left', 'top');
                 });
                 $yData += $lineH;
-            }
-            // Jika hanya 1 baris, tetap tambah lineH
-            if (count($valueLines) === 1) {
-                // sudah ditambah di loop atas
-            } else {
-                // sudah ditambah multi-line di atas
             }
         }
 
         // ================================================================
-        // MASA BERLAKU
+        // MASA BERLAKU (italic, centered)
         // ================================================================
-        $yMasa = $yData + 16;
-        $masaText = 'Surat Keterangan ini berlaku tiga bulan setelah dikeluarkan.';
-        $img->text($masaText, $cX, $yMasa, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(15); $f->color($black);
-            $f->align('center'); $f->valign('top');
-        });
-
-        // Underline kalimat masa berlaku
-        $masaLen = strlen($masaText) * 8.5;
-        $img->drawLine(function ($d) use ($cX, $masaLen, $yMasa, $black) {
-            $d->from($cX - $masaLen / 2, $yMasa + 18)
-              ->to($cX + $masaLen / 2, $yMasa + 18)
-              ->color($black)->width(1);
+        $yMasa = $yData + 18;
+        $masaText = 'Surat Keterangan ini berlaku tiga bulan setelah surat dikeluarkan.';
+        $img->text($masaText, $cX, $yMasa, function ($f) use ($fontI, $black) {
+            $f->file($fontI); $f->size(18); $f->color($black);
+            $f->align('center', 'top');
         });
 
         // ================================================================
         // KALIMAT PENUTUP
         // ================================================================
-        $yPenutup = $yMasa + 42;
+        $yPenutup = $yMasa + 44;
         $penutupText = 'Demikian surat keterangan ini kami buat dengan sebenarnya agar dapatnya dipergunakan sebagaimana mestinya.';
-        $penutupLines = $this->wrapText($penutupText, 86);
+        $penutupLines = $this->wrapText($penutupText, 74);
         foreach ($penutupLines as $pLine) {
-            $img->text($pLine, $mL + 28, $yPenutup, function ($f) use ($fontR, $black) {
-                $f->filename($fontR); $f->size(15); $f->color($black);
-                $f->align('left'); $f->valign('top');
+            $img->text($pLine, $mL + 38, $yPenutup, function ($f) use ($fontR, $black) {
+                $f->file($fontR); $f->size(18); $f->color($black);
+                $f->align('left', 'top');
             });
-            $yPenutup += 22;
+            $yPenutup += 26;
         }
 
         // ================================================================
-        // BLOK TTD
+        // BLOK TTD — posisi kanan, mirroring preview `.surat-ttd-box`
         // ================================================================
-        $yTtd   = $yPenutup + 36;
-        $xTtd   = $W - 340; // posisi TTD di kanan
+        $yTtd = $yPenutup + 45;
+        $xTtd = (int)($W * 0.72); // ~72% dari kiri = posisi kanan seperti preview
 
-        // Tempat dan tanggal
         $img->text('Pelang Lor, ' . $data['tanggal_surat'], $xTtd, $yTtd, function ($f) use ($fontR, $black) {
-            $f->filename($fontR); $f->size(15); $f->color($black);
-            $f->align('center'); $f->valign('top');
+            $f->file($fontR); $f->size(18); $f->color($black);
+            $f->align('center', 'top');
         });
 
-        // Jabatan
-        $yTtd += 22;
+        $yTtd += 26;
         if ($ttd === 'kades') {
             $jabatan = 'Kepala Desa Pelang Lor';
             $nama    = 'HARIYANA';
@@ -352,31 +345,26 @@ class SuratController extends Controller
         }
 
         $img->text($jabatan, $xTtd, $yTtd, function ($f) use ($fontR, $black) {
-            $f->filename($fontR); $f->size(15); $f->color($black);
-            $f->align('center'); $f->valign('top');
+            $f->file($fontR); $f->size(18); $f->color($black);
+            $f->align('center', 'top');
         });
 
-        // Ruang TTD (kosong, untuk tanda tangan)
-        $yTtdNama = $yTtd + 90;
+        // Ruang tanda tangan (~80px = 1.3cm di 150DPI)
+        $yTtdNama = $yTtd + 110;
 
-        // Nama penandatangan (underlined)
         $img->text($nama, $xTtd, $yTtdNama, function ($f) use ($fontB, $black) {
-            $f->filename($fontB); $f->size(15); $f->color($black);
-            $f->align('center'); $f->valign('top');
+            $f->file($fontB); $f->size(18); $f->color($black);
+            $f->align('center', 'top');
         });
-        $namaLen = strlen($nama) * 9;
+        $namaLen = (int)(strlen($nama) * 11);
         $img->drawLine(function ($d) use ($xTtd, $namaLen, $yTtdNama, $black) {
-            $d->from($xTtd - $namaLen / 2, $yTtdNama + 20)
-              ->to($xTtd + $namaLen / 2, $yTtdNama + 20)
+            $d->from((int)($xTtd - $namaLen / 2), $yTtdNama + 23)
+              ->to((int)($xTtd + $namaLen / 2), $yTtdNama + 23)
               ->color($black)->width(1);
         });
 
-        // ================================================================
-        // Trim canvas ke konten aktual (tambah padding bawah)
-        // ================================================================
-        $finalHeight = $yTtdNama + 80;
-        $finalHeight = max($finalHeight, 1400); // minimal tinggi
-        $img->crop($W, $finalHeight, 0, 0);
+        // Crop rapi ke ukuran A4 persis (tidak ada ruang putih berlebih)
+        $img->crop($W, $H, 0, 0);
 
         return $img;
     }
