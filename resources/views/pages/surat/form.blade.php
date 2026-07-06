@@ -1,0 +1,270 @@
+@extends('layouts.app')
+
+@section('title', 'Permohonan Surat Keterangan')
+@section('meta_description', 'Buat surat keterangan resmi Desa Pelang Lor secara online. Isi form, generate surat, dan download dalam format JPG.')
+
+@section('content')
+
+<div class="page-hero page-hero--green">
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="{{ route('landing') }}">Beranda</a>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+            <span>Surat Keterangan</span>
+        </nav>
+        <h1 class="page-hero__title">Permohonan Surat Keterangan</h1>
+        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Surat akan di-generate otomatis dan bisa langsung diunduh dalam format JPG.</p>
+    </div>
+</div>
+
+<section class="surat-form-section">
+    <div class="container container--narrow">
+
+        {{-- Langkah --}}
+        <div class="info-steps">
+            <div class="info-step">
+                <div class="info-step__num">1</div>
+                <div class="info-step__text">
+                    <strong>Isi Jenis Surat</strong>
+                    <p>Ketik jenis surat yang Anda butuhkan</p>
+                </div>
+            </div>
+            <div class="info-step__arrow">→</div>
+            <div class="info-step">
+                <div class="info-step__num">2</div>
+                <div class="info-step__text">
+                    <strong>Isi Data Diri</strong>
+                    <p>Lengkapi sesuai KTP / Kartu Keluarga</p>
+                </div>
+            </div>
+            <div class="info-step__arrow">→</div>
+            <div class="info-step">
+                <div class="info-step__num">3</div>
+                <div class="info-step__text">
+                    <strong>Download JPG</strong>
+                    <p>Surat resmi siap diunduh</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Form Utama --}}
+        <form action="{{ route('surat.store') }}" method="POST" id="suratForm">
+            @csrf
+
+            {{-- Jenis Surat --}}
+            <div class="form-card">
+                <div class="form-card__header">
+                    <span class="form-card__num">1</span>
+                    <div>
+                        <h2 class="form-card__title">Jenis Surat</h2>
+                        <p class="form-card__desc">Ketik jenis surat yang Anda perlukan, contoh: <em>Surat Keterangan Domisili</em>, <em>Surat Keterangan Tidak Mampu</em>, dll.</p>
+                    </div>
+                </div>
+                <div class="form-card__body">
+                    <div class="form-group">
+                        <label class="form-label" for="jenis_surat">Jenis Surat <span class="required">*</span></label>
+                        <input type="text" id="jenis_surat" name="jenis_surat"
+                               class="form-input @error('jenis_surat') is-error @enderror"
+                               value="{{ old('jenis_surat') }}"
+                               placeholder="Contoh: Surat Keterangan Domisili"
+                               required autocomplete="off">
+                        @error('jenis_surat')
+                            <p class="form-error">{{ $message }}</p>
+                        @enderror
+                        <p class="form-hint">Teks ini akan muncul sebagai judul surat yang dicetak.</p>
+                    </div>
+
+                    {{-- Contoh cepat --}}
+                    <div class="quick-pick">
+                        <span class="quick-pick__label">Contoh cepat:</span>
+                        <button type="button" class="quick-pick__btn" onclick="setJenis(this)">Surat Keterangan Domisili</button>
+                        <button type="button" class="quick-pick__btn" onclick="setJenis(this)">Surat Keterangan Tidak Mampu</button>
+                        <button type="button" class="quick-pick__btn" onclick="setJenis(this)">Surat Keterangan Usaha</button>
+                        <button type="button" class="quick-pick__btn" onclick="setJenis(this)">Surat Keterangan Bepergian</button>
+                        <button type="button" class="quick-pick__btn" onclick="setJenis(this)">Surat Pengantar</button>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Data Diri --}}
+            <div class="form-card">
+                <div class="form-card__header">
+                    <span class="form-card__num">2</span>
+                    <div>
+                        <h2 class="form-card__title">Data Diri Pemohon</h2>
+                        <p class="form-card__desc">Isi sesuai data yang tertera di KTP.</p>
+                    </div>
+                </div>
+                <div class="form-card__body">
+                    <div class="form-grid">
+
+                        {{-- 1. Nama --}}
+                        <div class="form-group form-group--full">
+                            <label class="form-label" for="nama">
+                                <span class="field-num">1</span> Nama Lengkap <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nama" name="nama"
+                                   class="form-input @error('nama') is-error @enderror"
+                                   value="{{ old('nama') }}"
+                                   placeholder="Nama sesuai KTP (huruf kapital otomatis di surat)"
+                                   required>
+                            @error('nama') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 2. NIK --}}
+                        <div class="form-group">
+                            <label class="form-label" for="nik">
+                                <span class="field-num">2</span> Nomor Induk Kependudukan (NIK) <span class="required">*</span>
+                            </label>
+                            <input type="text" id="nik" name="nik"
+                                   class="form-input @error('nik') is-error @enderror"
+                                   value="{{ old('nik') }}"
+                                   placeholder="16 digit NIK" maxlength="16"
+                                   pattern="\d{16}" title="NIK harus 16 digit angka"
+                                   required>
+                            @error('nik') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 3. Jenis Kelamin --}}
+                        <div class="form-group">
+                            <label class="form-label" for="jenis_kelamin">
+                                <span class="field-num">3</span> Jenis Kelamin <span class="required">*</span>
+                            </label>
+                            <select id="jenis_kelamin" name="jenis_kelamin"
+                                    class="form-input form-input--select @error('jenis_kelamin') is-error @enderror"
+                                    required>
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="Laki-Laki"  {{ old('jenis_kelamin') === 'Laki-Laki'  ? 'selected' : '' }}>Laki-Laki</option>
+                                <option value="Perempuan"  {{ old('jenis_kelamin') === 'Perempuan'  ? 'selected' : '' }}>Perempuan</option>
+                            </select>
+                            @error('jenis_kelamin') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 4. Tempat Lahir --}}
+                        <div class="form-group">
+                            <label class="form-label" for="tempat_lahir">
+                                <span class="field-num">4</span> Tempat Lahir <span class="required">*</span>
+                            </label>
+                            <input type="text" id="tempat_lahir" name="tempat_lahir"
+                                   class="form-input @error('tempat_lahir') is-error @enderror"
+                                   value="{{ old('tempat_lahir') }}"
+                                   placeholder="Kota/Kabupaten tempat lahir"
+                                   required>
+                            @error('tempat_lahir') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 4b. Tanggal Lahir --}}
+                        <div class="form-group">
+                            <label class="form-label" for="tanggal_lahir">
+                                Tanggal Lahir <span class="required">*</span>
+                            </label>
+                            <input type="date" id="tanggal_lahir" name="tanggal_lahir"
+                                   class="form-input @error('tanggal_lahir') is-error @enderror"
+                                   value="{{ old('tanggal_lahir') }}"
+                                   required>
+                            @error('tanggal_lahir') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 5. Kewarganegaraan --}}
+                        <div class="form-group">
+                            <label class="form-label" for="kewarganegaraan">
+                                <span class="field-num">5</span> Kewarganegaraan <span class="required">*</span>
+                            </label>
+                            <input type="text" id="kewarganegaraan" name="kewarganegaraan"
+                                   class="form-input"
+                                   value="{{ old('kewarganegaraan', 'Indonesia') }}"
+                                   required>
+                        </div>
+
+                        {{-- 6. Agama --}}
+                        <div class="form-group">
+                            <label class="form-label" for="agama">
+                                <span class="field-num">6</span> Agama <span class="required">*</span>
+                            </label>
+                            <select id="agama" name="agama"
+                                    class="form-input form-input--select @error('agama') is-error @enderror"
+                                    required>
+                                <option value="">-- Pilih Agama --</option>
+                                @foreach(['Islam','Kristen','Katolik','Hindu','Buddha','Konghucu'] as $ag)
+                                    <option value="{{ $ag }}" {{ old('agama') === $ag ? 'selected' : '' }}>{{ $ag }}</option>
+                                @endforeach
+                            </select>
+                            @error('agama') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 7. Pekerjaan --}}
+                        <div class="form-group">
+                            <label class="form-label" for="pekerjaan">
+                                <span class="field-num">7</span> Pekerjaan <span class="required">*</span>
+                            </label>
+                            <input type="text" id="pekerjaan" name="pekerjaan"
+                                   class="form-input @error('pekerjaan') is-error @enderror"
+                                   value="{{ old('pekerjaan') }}"
+                                   placeholder="Contoh: Karyawan Swasta, Petani, Pelajar"
+                                   required>
+                            @error('pekerjaan') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 8. Alamat --}}
+                        <div class="form-group form-group--full">
+                            <label class="form-label" for="alamat">
+                                <span class="field-num">8</span> Alamat Lengkap <span class="required">*</span>
+                            </label>
+                            <textarea id="alamat" name="alamat" rows="3"
+                                      class="form-input form-input--textarea @error('alamat') is-error @enderror"
+                                      placeholder="Dsn. [Dusun] RT [xxx] RW [xxx] Desa Pelang Lor Kec. Kedunggalar Kab. Ngawi"
+                                      required>{{ old('alamat') }}</textarea>
+                            @error('alamat') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                        {{-- 10. Keperluan --}}
+                        <div class="form-group form-group--full">
+                            <label class="form-label" for="keperluan">
+                                <span class="field-num">10</span> Keperluan <span class="required">*</span>
+                            </label>
+                            <input type="text" id="keperluan" name="keperluan"
+                                   class="form-input @error('keperluan') is-error @enderror"
+                                   value="{{ old('keperluan') }}"
+                                   placeholder="Contoh: Melamar Pekerjaan, Mengurus BPJS, Keperluan Sekolah"
+                                   required>
+                            @error('keperluan') <p class="form-error">{{ $message }}</p> @enderror
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            {{-- Submit --}}
+            <div class="form-submit-area">
+                <p class="form-disclaimer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Dengan mengajukan permohonan ini, saya menyatakan bahwa data yang saya isi adalah benar dan dapat dipertanggungjawabkan.
+                </p>
+                <button type="submit" class="btn btn--primary btn--lg btn--full" id="submitBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                    Generate Surat Keterangan
+                </button>
+            </div>
+
+        </form>
+    </div>
+</section>
+
+@endsection
+
+@push('scripts')
+<script>
+function setJenis(btn) {
+    document.getElementById('jenis_surat').value = btn.textContent.trim();
+    document.getElementById('jenis_surat').focus();
+    // Highlight active
+    document.querySelectorAll('.quick-pick__btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// NIK: hanya angka
+document.getElementById('nik').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '').substring(0, 16);
+});
+</script>
+@endpush
