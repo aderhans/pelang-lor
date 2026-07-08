@@ -14,17 +14,25 @@
             <span>Preview</span>
         </nav>
         <h1 class="page-hero__title">Preview Surat</h1>
-        <p class="page-hero__desc">Periksa kembali data, pilih penandatangan, lalu download surat dalam format JPG.</p>
+        <p class="page-hero__desc">Periksa kembali data, pilih penandatangan, lalu download surat dalam format JPG atau PDF.</p>
     </div>
 </div>
 
 <section class="preview-section">
     <div class="container container--narrow">
 
-        {{-- Status --}}
-        <div class="preview-alert" style="margin-bottom: 24px;">
+        {{-- Status Alert: Menunggu Persetujuan Admin --}}
+        <div class="preview-alert preview-alert--success" style="margin-bottom: 12px;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            Surat berhasil di-generate! Pilih penandatangan lalu klik Download.
+            <div>
+                <strong>Permohonan berhasil dikirim!</strong> Surat Anda telah masuk ke sistem dan sedang menunggu verifikasi dari Admin Desa Pelang Lor.
+            </div>
+        </div>
+        <div class="preview-alert preview-alert--pending" style="margin-bottom: 24px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <div>
+                <strong>Surat belum resmi.</strong> Surat ini akan diarsipkan secara resmi setelah disetujui oleh Admin. Anda tetap dapat mengunduh preview surat untuk referensi pribadi.
+            </div>
         </div>
 
         {{-- Toggle Penandatangan --}}
@@ -136,7 +144,7 @@
                         <td class="surat-val">{{ $data['alamat'] }}</td>
                     </tr>
                     <tr>
-                        <td class="surat-no">10.</td>
+                        <td class="surat-no">9.</td>
                         <td class="surat-key">Keperluan</td>
                         <td class="surat-sep">:</td>
                         <td class="surat-val">{{ $data['keperluan'] }}</td>
@@ -172,11 +180,18 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
                 Buat Surat Baru
             </a>
-            <a href="{{ route('surat.download', $id) }}?ttd=kades"
-               class="btn-download" id="downloadBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download Surat (JPG)
-            </a>
+            <div class="download-group">
+                <a href="{{ route('surat.download', $id) }}?ttd=kades"
+                   class="btn-download btn-download--jpg" id="downloadBtn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8.5 8.5v7M8.5 12h7M15.5 8.5v7"/></svg>
+                    Download JPG
+                </a>
+                <a href="{{ route('surat.download.pdf', $id) }}?ttd=kades"
+                   class="btn-download btn-download--pdf" id="downloadBtnPdf">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Download PDF
+                </a>
+            </div>
         </div>
 
         {{-- Catatan --}}
@@ -196,12 +211,12 @@ let currentTtd = 'kades';
 
 const ttdData = {
     kades: {
-        jabatan: '<strong>Kepala Desa Pelang Lor</strong>',
+        jabatan: 'Kepala Desa Pelang Lor',
         nama:    '<strong><u>HARIYANA</u></strong>',
         param:   'kades'
     },
     sekdes: {
-        jabatan: '<strong>Sekretaris Desa Pelang Lor</strong>',
+        jabatan: 'Sekretaris Desa Pelang Lor',
         nama:    '<strong><u>DIDIK SUPRIYANTO</u></strong>',
         param:   'sekdes'
     }
@@ -218,9 +233,15 @@ function setTtd(type) {
     document.getElementById('btnKades').classList.toggle('ttd-btn--active', type === 'kades');
     document.getElementById('btnSekdes').classList.toggle('ttd-btn--active', type === 'sekdes');
 
-    // Update link download
-    const base = '{{ route('surat.download', $id) }}';
-    document.getElementById('downloadBtn').href = base + '?ttd=' + type;
+    const ts = new Date().getTime();
+
+    // Update link download JPG dengan cache buster
+    const baseJpg = '{{ route('surat.download', $id) }}';
+    document.getElementById('downloadBtn').href = baseJpg + '?ttd=' + type + '&t=' + ts;
+
+    // Update link download PDF dengan cache buster
+    const basePdf = '{{ route('surat.download.pdf', $id) }}';
+    document.getElementById('downloadBtnPdf').href = basePdf + '?ttd=' + type + '&t=' + ts;
 }
 </script>
 @endpush

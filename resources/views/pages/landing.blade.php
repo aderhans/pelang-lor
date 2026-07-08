@@ -79,30 +79,6 @@
     </div>
 </section>
 
-{{-- STATS --}}
-<section class="stats">
-    <div class="container">
-        <div class="stats__row">
-            @foreach($stats as $stat)
-            <div class="stat-item">
-                <div class="stat-item__icon">
-                    @if($stat['icon'] === 'people')
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    @elseif($stat['icon'] === 'house')
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                    @elseif($stat['icon'] === 'map')
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/></svg>
-                    @else
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    @endif
-                </div>
-                <div class="stat-item__val">{{ $stat['value'] }}</div>
-                <div class="stat-item__label">{{ $stat['label'] }}</div>
-            </div>
-            @endforeach
-        </div>
-    </div>
-</section>
 
 {{-- HOW IT WORKS --}}
 <section class="how">
@@ -139,8 +115,8 @@
                 <div class="how-card__icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                 </div>
-                <h3>Download JPG</h3>
-                <p>Unduh surat dalam format JPG siap cetak dan gunakan</p>
+                <h3>Download JPG/PDF</h3>
+                <p>Unduh surat dalam format JPG/PDF siap cetak dan dipergunakan</p>
             </div>
         </div>
         <div class="how__cta">
@@ -216,6 +192,19 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </div>
                 </a>
+                <a href="{{ route('surat.index') }}?jenis=belum_menikah" class="lay-card">
+                    <span class="lay-card__num">05</span>
+                    <div class="lay-card__ico">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </div>
+                    <div class="lay-card__body">
+                        <h3>Belum Menikah</h3>
+                        <p>Keterangan status belum pernah menikah untuk warga</p>
+                    </div>
+                    <div class="lay-card__arr">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </div>
+                </a>
                 <a href="{{ route('surat.index') }}" class="lay-card lay-card--cta">
                     <div class="lay-card__ico">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -243,43 +232,102 @@
                 <p class="profil__sub">Kecamatan Kedunggalar &bull; Kabupaten Ngawi &bull; Jawa Timur</p>
                 <div class="profil__tabs">
                     <button class="p-tab active" data-tab="sejarah">Sejarah</button>
-                    <button class="p-tab" data-tab="visi-misi">Visi &amp; Misi</button>
+                    <button class="p-tab" data-tab="produk-unggulan">Produk Unggulan</button>
                     <button class="p-tab" data-tab="struktur">Perangkat</button>
                 </div>
                 <div class="p-panel active" id="tab-sejarah">
-                    <p>Desa Pelang Lor terletak di Kecamatan Kedunggalar, Kabupaten Ngawi, Provinsi Jawa Timur — desa agraris dengan sejarah panjang yang erat kaitannya dengan perkembangan wilayah Ngawi.</p>
+                    <p>Desa Pelang Lor terletak di Kecamatan Kedunggalar, Kabupaten Ngawi, Provinsi Jawa Timur, merupakan sebuah desa dengan sejarah panjang yang erat kaitannya dengan perkembangan wilayah Ngawi.</p>
                     <p>Dengan kondisi geografis yang strategis, Desa Pelang Lor berkembang menjadi desa yang sejahtera dengan potensi pertanian dan sumber daya alam yang melimpah. Masyarakatnya dikenal dengan semangat gotong royong yang tinggi.</p>
                 </div>
-                <div class="p-panel" id="tab-visi-misi">
-                    <div class="visi-box">
-                        <p class="visi-box__label">Visi</p>
-                        <p>"Terwujudnya Desa Pelang Lor yang Maju, Mandiri, dan Sejahtera Berlandaskan Gotong Royong"</p>
-                    </div>
-                    <p class="misi-label">Misi</p>
-                    <ul class="misi-list">
-                        <li>Meningkatkan kualitas pelayanan publik yang transparan dan akuntabel</li>
-                        <li>Mengembangkan potensi ekonomi lokal dan sumber daya masyarakat</li>
-                        <li>Membangun infrastruktur desa yang berkelanjutan</li>
-                        <li>Mewujudkan digitalisasi layanan administrasi desa</li>
-                        <li>Meningkatkan kualitas pendidikan dan kesehatan warga</li>
-                    </ul>
-                </div>
+<div class="p-panel" id="tab-produk-unggulan">
+    <div class="produk-grid">
+        <div class="produk-card">
+            <div class="produk-card__img">
+                <img src="{{ asset('images/produk/perkutut.jpg') }}" alt="Peternakan Perkutut Desa Pelang Lor">
+            </div>
+            <div class="produk-card__body">
+                <span class="produk-card__label">Peternakan</span>
+                <h3>Perkutut</h3>
+                <p>Desa Pelang Lor dikenal sebagai salah satu sentra budidaya burung perkutut di Kabupaten Ngawi. Warga secara turun-temurun mengembangkan perkutut unggulan dengan suara merdu dan kualitas juara, menjadi sumber penghasilan tambahan sekaligus kebanggaan desa.</p>
+            </div>
+        </div>
+        <div class="produk-card">
+            <div class="produk-card__img">
+                <img src="{{ asset('images/produk/lele.jpg') }}" alt="Peternakan Ikan Lele Desa Pelang Lor">
+            </div>
+            <div class="produk-card__body">
+                <span class="produk-card__label">Peternakan</span>
+                <h3>Ikan Lele</h3>
+                <p>Peternakan ikan lele menjadi salah satu produk unggulan warga Desa Pelang Lor, dikelola secara mandiri melalui kolam-kolam budidaya yang tersebar di beberapa dusun. Usaha ini menjadi sumber penghasilan tambahan yang menjanjikan bagi warga sekaligus mendukung ketahanan pangan desa.</p>
+            </div>
+        </div>
+    </div>
+</div>
                 <div class="p-panel" id="tab-struktur">
-                    <div class="perangkat-grid">
-                        <div class="perangkat-item">
-                            <div class="perangkat-item__av">KD</div>
-                            <p class="perangkat-item__pos">Kepala Desa</p>
-                            <p class="perangkat-item__name">HARIYANA</p>
-                        </div>
-                        <div class="perangkat-item">
-                            <div class="perangkat-item__av">SK</div>
-                            <p class="perangkat-item__pos">Sekretaris Desa</p>
-                            <p class="perangkat-item__name">DIDIK SUPRIYANTO</p>
-                        </div>
-                        <div class="perangkat-item">
-                            <div class="perangkat-item__av">BK</div>
-                            <p class="perangkat-item__pos">Bendahara</p>
-                            <p class="perangkat-item__name">— Diperbarui</p>
+                    <div class="org-chart-container">
+                        <div class="oc-layout">
+                            <!-- KADES -->
+                            <div class="oc-kades">
+                                <div class="oc-card">
+                                    <div class="oc-card-title">KEPALA DESA</div>
+                                    <div class="oc-card-name">HARIYANA</div>
+                                </div>
+                                <div class="oc-line-v"></div>
+                            </div>
+
+                            <!-- SEKDES ROW -->
+                            <div class="oc-sekdes-row">
+                                <div class="oc-line-v-main"></div>
+                                <div class="oc-line-h-sekdes"></div>
+                                <div class="oc-sekdes-card-wrap">
+                                    <div class="oc-line-v-drop"></div>
+                                    <div class="oc-card">
+                                        <div class="oc-card-title">SEKRETARIS DESA</div>
+                                        <div class="oc-card-name">YARMANA</div>
+                                    </div>
+                                    <div class="oc-line-v"></div>
+                                </div>
+                            </div>
+
+                            <!-- KASI / KAUR ROW -->
+                            <div class="oc-kasi-kaur-row">
+                                <!-- Left Group: Kasi -->
+                                <div class="oc-kasi-group">
+                                    <div class="oc-line-h-group"></div>
+                                    <div class="oc-group-cards">
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA SEKSI<br>PEMERINTAHAN</div><div class="oc-card-name">DIDIK SUPRIYANTO</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA SEKSI<br>KESEJAHTERAAN</div><div class="oc-card-name">KUSNAN</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA SEKSI<br>PELAYANAN</div><div class="oc-card-name">KASNI</div></div></div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Main Vertical Line -->
+                                <div class="oc-line-v-main"></div>
+
+                                <!-- Right Group: Kaur -->
+                                <div class="oc-kaur-group">
+                                    <div class="oc-line-h-group"></div>
+                                    <div class="oc-group-cards">
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA URUSAN<br>TATA USAHA DAN UMUM</div><div class="oc-card-name">IPAH DWI LESTARI</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA URUSAN<br>KEUANGAN</div><div class="oc-card-name">TIYARA ERMITA SARI</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA URUSAN<br>PERENCANAAN</div><div class="oc-card-name">SUWITO</div></div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- DUSUN ROW -->
+                            <div class="oc-dusun-row">
+                                <div class="oc-line-v-main" style="height: 40px; margin-bottom: -2px; position: relative;"></div>
+                                <div class="oc-dusun-group">
+                                    <div class="oc-line-h-group"></div>
+                                    <div class="oc-group-cards">
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA DUSUN<br>TAMBAKSELO TIMUR</div><div class="oc-card-name">SEPTYAN YOGA K.</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA DUSUN<br>TAMBAKSELO SELATAN</div><div class="oc-card-name">JOKO SULISTIYO</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA DUSUN<br>TAMBAKSELO BARAT</div><div class="oc-card-name">MARIYANTO</div></div></div>
+                                        <div><div class="oc-line-v-drop"></div><div class="oc-card"><div class="oc-card-title">KEPALA DUSUN<br>PELANGGAREM</div><div class="oc-card-name">AGUS SUPRIYANTO</div></div></div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -287,7 +335,7 @@
             <div class="profil__right">
                 <div class="map-card">
                     <div class="map-card__embed">
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.0!2d111.47!3d-7.41!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zN8KwMjQnMzYuMCJTIDExMcKwMjgnMTIuMCJF!5e0!3m2!1sid!2sid!4v1234567890" width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Peta Desa Pelang Lor"></iframe>
+                        <iframe src="https://maps.google.com/maps?q=Kantor%20Desa%20Pelang%20Lor,%20Ngawi&t=&z=16&ie=UTF8&iwloc=&output=embed" width="100%" height="260" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Peta Desa Pelang Lor"></iframe>
                     </div>
                     <div class="map-card__info">
                         <div class="map-info-row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><span>Kecamatan Kedunggalar</span></div>

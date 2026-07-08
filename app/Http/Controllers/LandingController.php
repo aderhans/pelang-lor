@@ -6,12 +6,7 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $stats = [
-            ['label' => 'Jumlah Penduduk', 'value' => '3.247', 'icon' => 'people'],
-            ['label' => 'Kepala Keluarga', 'value' => '982', 'icon' => 'house'],
-            ['label' => 'RT/RW', 'value' => '12/4', 'icon' => 'map'],
-            ['label' => 'Dusun', 'value' => '4', 'icon' => 'geo'],
-        ];
+
 
         $berita = [
             [
@@ -31,6 +26,6 @@ class LandingController extends Controller
             ],
         ];
 
-        return view('pages.landing', compact('stats', 'berita'));
+        return view('pages.landing', compact('berita'));
     }
 }

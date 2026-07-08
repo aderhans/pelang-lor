@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Permohonan Surat Keterangan')
-@section('meta_description', 'Buat surat keterangan resmi Desa Pelang Lor secara online. Isi form, generate surat, dan download dalam format JPG.')
+@section('meta_description', 'Buat surat keterangan resmi Desa Pelang Lor secara online. Isi form, buat surat, lalu unduh dalam format JPG/PDF.')
 
 @section('content')
 
@@ -13,7 +13,7 @@
             <span>Surat Keterangan</span>
         </nav>
         <h1 class="page-hero__title">Permohonan Surat Keterangan</h1>
-        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Surat akan di-generate otomatis dan bisa langsung diunduh dalam format JPG.</p>
+        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Surat akan dibuat otomatis dan bisa langsung diunduh dalam format JPG/PDF.</p>
     </div>
 </div>
 
@@ -41,7 +41,7 @@
             <div class="info-step">
                 <div class="info-step__num">3</div>
                 <div class="info-step__text">
-                    <strong>Download JPG</strong>
+                    <strong>Download JPG/PDF</strong>
                     <p>Surat resmi siap diunduh</p>
                 </div>
             </div>
@@ -215,10 +215,10 @@
                             @error('alamat') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 10. Keperluan --}}
+                        {{-- 9. Keperluan --}}
                         <div class="form-group form-group--full">
                             <label class="form-label" for="keperluan">
-                                <span class="field-num">10</span> Keperluan <span class="required">*</span>
+                                <span class="field-num">9</span> Keperluan <span class="required">*</span>
                             </label>
                             <input type="text" id="keperluan" name="keperluan"
                                    class="form-input @error('keperluan') is-error @enderror"
@@ -240,7 +240,7 @@
                 </p>
                 <button type="submit" class="btn-submit" id="submitBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-                    Generate Surat Keterangan
+                    Buat Surat Keterangan
                 </button>
             </div>
 

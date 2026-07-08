@@ -8,86 +8,95 @@
         /* ── Reset ───────────────────────────────── */
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* ── Body — padding sebagai margin halaman (paling reliable di DomPDF) ── */
+        /* ── Body: ukuran A4 @96DPI = 794px, margin 2.54cm = ~96px ── */
+        html, body {
+            width: 794px;
+            background: #ffffff;
+        }
+
         body {
             font-family: 'Times New Roman', Times, serif;
             font-size: 12pt;
             color: #000000;
-            background: #ffffff;
-            padding: 2.54cm;
+            padding: 96px;               /* 2.54cm @96DPI */
+            width: 794px;
+            min-height: 1123px;          /* A4 height @96DPI */
         }
 
         /* ── KOP SURAT ─────────────────────────── */
         .surat-kop {
-            display: table;
-            width: 100%;
-            margin-bottom: 4pt;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 6px;
         }
         .surat-kop__logo {
-            display: table-cell;
-            width: 80pt;
-            vertical-align: middle;
+            flex-shrink: 0;
+            width: 90px;
             text-align: center;
-            padding-right: 8pt;
         }
         .surat-kop__logo img {
-            width: 72pt;
+            width: 80px;
             height: auto;
         }
         .surat-kop__text {
-            display: table-cell;
-            vertical-align: middle;
+            flex: 1;
             text-align: center;
         }
         .surat-kop__text p {
             font-size: 13pt;
             font-weight: bold;
             line-height: 1.5;
+            margin: 0;
         }
         .surat-kop__desa {
-            font-size: 20pt;
+            font-size: 22pt;
             font-weight: bold;
             text-transform: uppercase;
             line-height: 1.3;
+            margin: 2px 0;
         }
         .surat-kop__alamat {
             font-size: 10pt;
             font-weight: normal;
+            margin: 0;
         }
         .surat-kop__garis-tebal {
-            border-top: 4pt solid #000000;
-            margin-top: 4pt;
+            border-top: 4px solid #000000;
+            margin-top: 6px;
         }
         .surat-kop__garis-tipis {
-            border-top: 1pt solid #000000;
-            margin-top: 2pt;
+            border-top: 1px solid #000000;
+            margin-top: 2px;
             margin-bottom: 0;
         }
 
         /* ── JUDUL SURAT ─────────────────────────── */
         .surat-judul {
             text-align: center;
-            margin-top: 16pt;
-            margin-bottom: 10pt;
+            margin-top: 18pt;
+            margin-bottom: 12pt;
         }
         .surat-judul-text {
             font-size: 13pt;
             font-weight: bold;
             text-decoration: underline;
             text-transform: uppercase;
+            margin: 0;
         }
         .surat-judul-no {
             font-size: 12pt;
             font-style: italic;
-            margin-top: 3pt;
+            margin-top: 4pt;
+            margin-bottom: 0;
         }
 
         /* ── ISI SURAT ───────────────────────────── */
         .surat-pembuka {
             font-size: 12pt;
             text-align: justify;
-            text-indent: 28pt;
-            line-height: 1.6;
+            text-indent: 2.5em;
+            line-height: 1.7;
             margin-bottom: 10pt;
         }
 
@@ -98,44 +107,47 @@
             margin-bottom: 10pt;
         }
         .surat-data-table td {
-            padding: 2pt 0;
+            padding: 2.5pt 0;
             vertical-align: top;
         }
-        .surat-no  { width: 6%;  }
-        .surat-key { width: 35%; }
-        .surat-sep { width: 4%;  text-align: center; }
-        .surat-val { width: 55%; }
+        .surat-no  { width: 6%; }
+        .surat-key { width: 36%; }
+        .surat-sep { width: 4%; text-align: center; }
+        .surat-val { width: 54%; }
 
         .surat-masa-berlaku {
             font-size: 12pt;
             font-style: italic;
             text-align: center;
-            margin-top: 10pt;
-            margin-bottom: 10pt;
+            margin-top: 12pt;
+            margin-bottom: 12pt;
         }
 
         .surat-penutup {
             font-size: 12pt;
             text-align: justify;
-            text-indent: 28pt;
-            line-height: 1.6;
-            margin-bottom: 18pt;
+            text-indent: 2.5em;
+            line-height: 1.7;
+            margin-bottom: 20pt;
         }
 
         /* ── TTD ─────────────────────────────────── */
-        .surat-ttd-table {
-            width: 100%;
-            border-collapse: collapse;
+        .surat-ttd {
+            display: flex;
+            justify-content: flex-end;
         }
-        .surat-ttd-left  { width: 55%; }
-        .surat-ttd-right {
+        .surat-ttd-box {
             width: 45%;
             text-align: center;
-            vertical-align: top;
             font-size: 12pt;
-            line-height: 1.7;
+            line-height: 1.8;
         }
-        .surat-ttd-space { height: 70pt; }
+        .surat-ttd-box p {
+            margin: 0;
+        }
+        .surat-ttd-space {
+            height: 80px;
+        }
         .surat-ttd-name {
             font-weight: bold;
             text-decoration: underline;
@@ -148,7 +160,7 @@
     {{-- KOP SURAT --}}
     <div class="surat-kop">
         <div class="surat-kop__logo">
-            <img src="{{ public_path('images/Lambang_Kabupaten_Ngawi.png') }}" alt="Logo Ngawi">
+            <img src="{{ $logoPath }}" alt="Logo Ngawi">
         </div>
         <div class="surat-kop__text">
             <p>PEMERINTAH KABUPATEN NGAWI</p>
@@ -240,17 +252,14 @@
     </p>
 
     {{-- TTD --}}
-    <table class="surat-ttd-table">
-        <tr>
-            <td class="surat-ttd-left"></td>
-            <td class="surat-ttd-right">
-                <p>Pelang Lor, {{ $data['tanggal_surat'] }}</p>
-                <p>{{ $jabatan }}</p>
-                <div class="surat-ttd-space"></div>
-                <p class="surat-ttd-name">{{ $nama }}</p>
-            </td>
-        </tr>
-    </table>
+    <div class="surat-ttd">
+        <div class="surat-ttd-box">
+            <p>Pelang Lor, {{ $data['tanggal_surat'] }}</p>
+            <p>{{ $jabatan }}</p>
+            <div class="surat-ttd-space"></div>
+            <p class="surat-ttd-name"><u>{{ $nama }}</u></p>
+        </div>
+    </div>
 
 </body>
 </html>

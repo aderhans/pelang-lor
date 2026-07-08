@@ -13,7 +13,8 @@
 </head>
 <body>
 
-    {{-- NAVBAR --}}
+{{-- NAVBAR --}}
+    @unless(request()->is('admin*'))
     <nav class="navbar" id="navbar">
         <div class="container navbar__inner">
             <a href="{{ route('landing') }}" class="navbar__brand">
@@ -38,9 +39,19 @@
                         Buat Surat
                     </a>
                 </li>
+                <li>
+                    <a href="{{ route('admin.login') }}" class="navbar__admin-btn" title="Login Admin" id="admin-profile-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span class="navbar__admin-label">Admin</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </nav>
+    @endunless
 
     {{-- FLASH MESSAGES --}}
     @if(session('success'))
@@ -58,7 +69,8 @@
         @yield('content')
     </main>
 
-    {{-- FOOTER --}}
+{{-- FOOTER --}}
+    @unless(request()->is('admin*'))
     <footer class="footer">
         <div class="container footer__inner">
             <div>
@@ -85,21 +97,22 @@
                 <div class="footer__contact">
                     <div class="footer__contact-item">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span>Jl. Raya Pelang Lor, Kec. Kedunggalar, Kab. Ngawi 63254</span>
+                        <span>Pelang Lor, Kec. Kedunggalar, Kab. Ngawi 63254</span>
                     </div>
                     <div class="footer__contact-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l.77-.77a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 16.92z"/></svg>
-                        <span>(0351) XXXXXX</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                        <span>kdesapelanglor@gmail.com</span>
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer__bottom">
             <div class="container">
-                <p>© {{ date('Y') }} Desa Pelang Lor. Dikembangkan dalam rangka KKN Universitas.</p>
+                <p>© {{ date('Y') }} Desa Pelang Lor. Dikembangkan dalam rangka KKN Kelompok 29 UINSA.</p>
             </div>
         </div>
     </footer>
+    @endunless
 
 
     <script src="{{ asset('js/app.js') }}"></script>
