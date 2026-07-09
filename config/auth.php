@@ -37,8 +37,14 @@ return [
 
     'guards' => [
         'web' => [
-            'driver' => 'session',
+            'driver'   => 'session',
             'provider' => 'users',
+        ],
+
+        // Guard khusus untuk warga (terpisah dari admin)
+        'warga' => [
+            'driver'   => 'session',
+            'provider' => 'wargas',
         ],
     ],
 
@@ -62,7 +68,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', App\Models\User::class),
+            'model'  => env('AUTH_MODEL', App\Models\User::class),
+        ],
+
+        // Provider untuk warga
+        'wargas' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Warga::class,
         ],
 
         // 'users' => [

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Permohonan Surat Keterangan')
-@section('meta_description', 'Ajukan permohonan surat keterangan resmi Desa Pelang Lor secara online. Isi form dan kirim permintaan. Surat dapat diunduh setelah disetujui Admin Desa.')
+@section('title', 'Edit Surat Keterangan')
+@section('meta_description', 'Edit permohonan surat keterangan resmi Desa Pelang Lor.')
 
 @section('content')
 
@@ -10,10 +10,10 @@
         <nav class="breadcrumb">
             <a href="{{ route('landing') }}">Beranda</a>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            <span>Surat Keterangan</span>
+            <span>Edit Surat</span>
         </nav>
-        <h1 class="page-hero__title">Permohonan Surat Keterangan</h1>
-        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Permintaan Anda akan dikirim ke Admin Desa untuk diverifikasi, setelah disetujui surat siap diunduh.</p>
+        <h1 class="page-hero__title">Edit Surat Keterangan</h1>
+        <p class="page-hero__desc">Perbarui data surat Anda di bawah ini. Anda hanya dapat mengubah data selama surat belum diproses oleh Admin Desa.</p>
     </div>
 </div>
 
@@ -48,9 +48,10 @@
         </div>
 
         {{-- Form Utama --}}
-        <form action="{{ route('surat.store') }}" method="POST" id="suratForm">
+        <form action="{{ route('surat.update', $surat->id) }}" method="POST" id="suratForm">
             @csrf
-
+            <input type="hidden" name="nomor_surat" value="{{ $surat->nomor_surat }}">
+            
             {{-- Jenis Surat --}}
             <div class="form-card">
                 <div class="form-card__header">
@@ -64,7 +65,7 @@
                         <label class="form-label" for="jenis_surat">Jenis Surat <span class="required">*</span></label>
                         <input type="text" id="jenis_surat" name="jenis_surat"
                                class="form-input @error('jenis_surat') is-error @enderror"
-                               value="{{ old('jenis_surat') }}"
+                               value="{{ old('jenis_surat', $surat->jenis_surat) }}"
                                placeholder="Contoh: Surat Keterangan Domisili"
                                required autocomplete="off">
                         @error('jenis_surat')
@@ -103,7 +104,7 @@
                             </label>
                             <input type="text" id="nama" name="nama"
                                    class="form-input @error('nama') is-error @enderror"
-                                   value="{{ old('nama') }}"
+                                   value="{{ old('nama', $surat->nama) }}"
                                    placeholder="Nama sesuai KTP (huruf kapital otomatis di surat)"
                                    required>
                             @error('nama') <p class="form-error">{{ $message }}</p> @enderror
@@ -116,7 +117,7 @@
                             </label>
                             <input type="text" id="nik" name="nik"
                                    class="form-input @error('nik') is-error @enderror"
-                                   value="{{ old('nik') }}"
+                                   value="{{ old('nik', $surat->nik) }}"
                                    placeholder="16 digit NIK" maxlength="16"
                                    pattern="\d{16}" title="NIK harus 16 digit angka"
                                    required>
@@ -132,8 +133,8 @@
                                     class="form-input form-input--select @error('jenis_kelamin') is-error @enderror"
                                     required>
                                 <option value="">-- Pilih Jenis Kelamin --</option>
-                                <option value="Laki-Laki"  {{ old('jenis_kelamin') === 'Laki-Laki'  ? 'selected' : '' }}>Laki-Laki</option>
-                                <option value="Perempuan"  {{ old('jenis_kelamin') === 'Perempuan'  ? 'selected' : '' }}>Perempuan</option>
+                                <option value="Laki-Laki"  {{ old('jenis_kelamin', $surat->jenis_kelamin) === 'Laki-Laki'  ? 'selected' : '' }}>Laki-Laki</option>
+                                <option value="Perempuan"  {{ old('jenis_kelamin', $surat->jenis_kelamin) === 'Perempuan'  ? 'selected' : '' }}>Perempuan</option>
                             </select>
                             @error('jenis_kelamin') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
@@ -145,7 +146,7 @@
                             </label>
                             <input type="text" id="tempat_lahir" name="tempat_lahir"
                                    class="form-input @error('tempat_lahir') is-error @enderror"
-                                   value="{{ old('tempat_lahir') }}"
+                                   value="{{ old('tempat_lahir', $surat->tempat_lahir) }}"
                                    placeholder="Kota/Kabupaten tempat lahir"
                                    required>
                             @error('tempat_lahir') <p class="form-error">{{ $message }}</p> @enderror
@@ -158,8 +159,8 @@
                             </label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir"
                                    class="form-input @error('tanggal_lahir') is-error @enderror"
-                                   value="{{ old('tanggal_lahir') }}"
                                    required>
+                            <small style="color: #64748b; font-size: 13px; display: block; margin-top: 4px;">Pilih ulang tanggal lahir Anda. Tanggal sebelumnya: {{ $surat->tanggal_lahir }}</small>
                             @error('tanggal_lahir') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
@@ -170,7 +171,7 @@
                             </label>
                             <input type="text" id="kewarganegaraan" name="kewarganegaraan"
                                    class="form-input"
-                                   value="{{ old('kewarganegaraan', 'Indonesia') }}"
+                                   value="{{ old('kewarganegaraan', $surat->kewarganegaraan) }}"
                                    required>
                         </div>
 
@@ -184,7 +185,7 @@
                                     required>
                                 <option value="">-- Pilih Agama --</option>
                                 @foreach(['Islam','Kristen','Katolik','Hindu','Buddha','Konghucu'] as $ag)
-                                    <option value="{{ $ag }}" {{ old('agama') === $ag ? 'selected' : '' }}>{{ $ag }}</option>
+                                    <option value="{{ $ag }}" {{ old('agama', $surat->agama) === $ag ? 'selected' : '' }}>{{ $ag }}</option>
                                 @endforeach
                             </select>
                             @error('agama') <p class="form-error">{{ $message }}</p> @enderror
@@ -197,7 +198,7 @@
                             </label>
                             <input type="text" id="pekerjaan" name="pekerjaan"
                                    class="form-input @error('pekerjaan') is-error @enderror"
-                                   value="{{ old('pekerjaan') }}"
+                                   value="{{ old('pekerjaan', $surat->pekerjaan) }}"
                                    placeholder="Contoh: Karyawan Swasta, Petani, Pelajar"
                                    required>
                             @error('pekerjaan') <p class="form-error">{{ $message }}</p> @enderror
@@ -211,7 +212,7 @@
                             <textarea id="alamat" name="alamat" rows="3"
                                       class="form-input form-input--textarea @error('alamat') is-error @enderror"
                                       placeholder="Dsn. [Dusun] RT [xxx] RW [xxx] Desa Pelang Lor Kec. Kedunggalar Kab. Ngawi"
-                                      required>{{ old('alamat') }}</textarea>
+                                      required>{{ old('alamat', $surat->alamat) }}</textarea>
                             @error('alamat') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
@@ -222,7 +223,7 @@
                             </label>
                             <input type="text" id="keperluan" name="keperluan"
                                    class="form-input @error('keperluan') is-error @enderror"
-                                   value="{{ old('keperluan') }}"
+                                   value="{{ old('keperluan', $surat->keperluan) }}"
                                    placeholder="Contoh: Melamar Pekerjaan, Mengurus BPJS, Keperluan Sekolah"
                                    required>
                             @error('keperluan') <p class="form-error">{{ $message }}</p> @enderror
@@ -240,7 +241,7 @@
                 </p>
                 <button type="submit" class="btn-submit" id="submitBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    Kirim Permintaan Surat Keterangan
+                    Simpan Perubahan
                 </button>
             </div>
 

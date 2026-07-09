@@ -3595,3 +3595,130 @@ ul {
         display: none;
     }
 }
+
+/* =====================================================
+   WARGA AUTH (NAVBAR)
+   ===================================================== */
+
+.navbar__warga-register {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--n600);
+    padding: 8px 12px;
+    border-radius: var(--r-sm);
+    transition: var(--ease);
+}
+.navbar__warga-register:hover {
+    color: var(--p600);
+    background: var(--p50);
+}
+
+.navbar__warga-login {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--white);
+    background: var(--p600);
+    padding: 8px 16px;
+    border-radius: var(--r-full);
+    transition: var(--ease);
+}
+.navbar__warga-login:hover {
+    background: var(--p700);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(142, 22, 40, 0.2);
+}
+
+.navbar__warga-menu {
+    position: relative;
+}
+
+.navbar__warga-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--p50);
+    border: 1px solid var(--p200);
+    color: var(--p700);
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--ease);
+}
+.navbar__warga-avatar:hover,
+.navbar__warga-avatar:focus-within,
+.navbar__warga-menu:hover .navbar__warga-avatar {
+    background: var(--p100);
+    border-color: var(--p300);
+}
+
+.navbar__warga-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 220px;
+    background: var(--white);
+    border-radius: var(--r-md);
+    box-shadow: var(--s-md);
+    border: 1px solid var(--n100);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: var(--ease);
+    z-index: 100;
+    padding: 8px;
+}
+.navbar__warga-menu:hover .navbar__warga-dropdown,
+.navbar__warga-menu:focus-within .navbar__warga-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.navbar__warga-info {
+    padding: 12px;
+}
+.navbar__warga-email {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--n800);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.navbar__warga-wa {
+    font-size: 12px;
+    color: var(--n500);
+    margin-top: 2px;
+}
+
+.navbar__warga-divider {
+    height: 1px;
+    background: var(--n100);
+    margin: 4px 0;
+}
+
+.navbar__warga-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--p600);
+    background: transparent;
+    border: none;
+    border-radius: var(--r-sm);
+    cursor: pointer;
+    text-align: left;
+    transition: var(--ease);
+}
+.navbar__warga-logout:hover {
+    background: var(--p50);
+}

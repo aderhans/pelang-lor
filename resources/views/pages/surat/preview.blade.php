@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Preview Surat — ' . ($data['jenis_surat'] ?? 'Keterangan'))
+@section('title', 'Status Permohonan — ' . ($data['jenis_surat'] ?? 'Surat Keterangan'))
 
 @section('content')
 
@@ -11,31 +11,64 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
             <a href="{{ route('surat.index') }}">Surat Keterangan</a>
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-            <span>Preview</span>
+            <span>Status Permohonan</span>
         </nav>
-        <h1 class="page-hero__title">Preview Surat</h1>
-        <p class="page-hero__desc">Periksa kembali data, pilih penandatangan, lalu download surat dalam format JPG atau PDF.</p>
+        <h1 class="page-hero__title">Status Permohonan Surat</h1>
+        @if($data['status'] === 'Disetujui')
+            <p class="page-hero__desc">Surat Anda telah disetujui oleh Admin Desa. Silakan unduh dalam format JPG atau PDF.</p>
+        @elseif($data['status'] === 'Ditolak')
+            <p class="page-hero__desc">Permohonan surat Anda tidak dapat diproses. Silakan ajukan permohonan baru jika diperlukan.</p>
+        @else
+            <p class="page-hero__desc">Permohonan Anda telah diterima dan sedang menunggu verifikasi dari Admin Desa Pelang Lor.</p>
+        @endif
     </div>
 </div>
 
 <section class="preview-section">
     <div class="container container--narrow">
 
-        {{-- Status Alert: Menunggu Persetujuan Admin --}}
-        <div class="preview-alert preview-alert--success" style="margin-bottom: 12px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            <div>
-                <strong>Permohonan berhasil dikirim!</strong> Surat Anda telah masuk ke sistem dan sedang menunggu verifikasi dari Admin Desa Pelang Lor.
-            </div>
-        </div>
-        <div class="preview-alert preview-alert--pending" style="margin-bottom: 24px;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-            <div>
-                <strong>Surat belum resmi.</strong> Surat ini akan diarsipkan secara resmi setelah disetujui oleh Admin. Anda tetap dapat mengunduh preview surat untuk referensi pribadi.
-            </div>
-        </div>
+        {{-- ============================================================ --}}
+        {{-- STATUS ALERT                                                 --}}
+        {{-- ============================================================ --}}
 
-        {{-- Toggle Penandatangan --}}
+        @if($data['status'] === 'Disetujui')
+            {{-- DISETUJUI --}}
+            <div class="preview-alert preview-alert--success" style="margin-bottom: 24px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <div>
+                    <strong>Surat telah disetujui & diarsipkan!</strong> Surat Keterangan Anda sudah resmi dan dapat diunduh dalam format JPG atau PDF.
+                </div>
+            </div>
+
+        @elseif($data['status'] === 'Ditolak')
+            {{-- DITOLAK --}}
+            <div class="preview-alert preview-alert--error" style="margin-bottom: 24px; background: #fef2f2; border-color: #fca5a5; color: #991b1b;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+                <div>
+                    <strong>Permohonan ditolak.</strong> Surat ini tidak dapat disetujui oleh Admin. Silakan hubungi Kantor Desa Pelang Lor untuk informasi lebih lanjut, atau ajukan permohonan baru.
+                </div>
+            </div>
+
+        @else
+            {{-- MENUNGGU (default) --}}
+            <div class="preview-alert preview-alert--success" style="margin-bottom: 12px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                <div>
+                    <strong>Permintaan berhasil dikirim!</strong> Surat Anda telah masuk ke sistem dan sedang menunggu verifikasi dari Admin Desa Pelang Lor.
+                </div>
+            </div>
+            <div class="preview-alert preview-alert--pending" style="margin-bottom: 24px;">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div>
+                    <strong>Menunggu persetujuan Admin.</strong> Surat ini akan resmi dan dapat diunduh setelah disetujui oleh Admin Desa. Simpan halaman ini atau catat link URL ini untuk mengecek status dan mengunduh surat nantinya.
+                </div>
+            </div>
+        @endif
+
+        {{-- ============================================================ --}}
+        {{-- TTD SELECTOR — hanya tampil jika DISETUJUI                  --}}
+        {{-- ============================================================ --}}
+        @if($data['status'] === 'Disetujui')
         <div class="ttd-selector">
             <div class="ttd-selector__label">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -60,8 +93,11 @@
                 </button>
             </div>
         </div>
+        @endif
 
-        {{-- SURAT PREVIEW — tampilan persis template asli --}}
+        {{-- ============================================================ --}}
+        {{-- SURAT PREVIEW                                                --}}
+        {{-- ============================================================ --}}
         <div class="surat-preview" id="suratPreview">
 
             {{-- KOP SURAT --}}
@@ -174,12 +210,23 @@
             </div>{{-- /.surat-body --}}
         </div>{{-- /.surat-preview --}}
 
-        {{-- Tombol Aksi --}}
+        {{-- ============================================================ --}}
+        {{-- TOMBOL AKSI — kondisional berdasarkan status                 --}}
+        {{-- ============================================================ --}}
         <div class="preview-actions">
+
+            {{-- Tombol kembali/ajukan baru (selalu ada) --}}
             <a href="{{ route('surat.index') }}" class="btn-back">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                Buat Surat Baru
+                @if($data['status'] === 'Ditolak')
+                    Ajukan Permohonan Baru
+                @else
+                    Kirim Permintaan Baru
+                @endif
             </a>
+
+            @if($data['status'] === 'Disetujui')
+            {{-- Tombol Download — hanya tampil jika DISETUJUI --}}
             <div class="download-group">
                 <a href="{{ route('surat.download', $id) }}?ttd=kades"
                    class="btn-download btn-download--jpg" id="downloadBtn">
@@ -192,13 +239,24 @@
                     Download PDF
                 </a>
             </div>
+            @endif
+
         </div>
 
-        {{-- Catatan --}}
+        {{-- ============================================================ --}}
+        {{-- CATATAN BAWAH                                                --}}
+        {{-- ============================================================ --}}
+        @if($data['status'] === 'Disetujui')
         <div class="preview-alert" style="margin-top: 28px; background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
             <p style="margin: 0;">Surat ini merupakan dokumen digital resmi Desa Pelang Lor. Untuk keperluan yang membutuhkan tanda tangan basah dan stempel asli, silakan datang ke Kantor Desa Pelang Lor pada jam kerja.</p>
         </div>
+        @elseif($data['status'] === 'Menunggu')
+        <div class="preview-alert" style="margin-top: 28px; background: #fffbeb; border-color: #fcd34d; color: #92400e;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <p style="margin: 0;"><strong>Penting:</strong> Simpan atau bookmark URL halaman ini. Anda perlu kembali ke halaman ini setelah surat disetujui admin untuk mengunduh surat dalam format JPG/PDF.</p>
+        </div>
+        @endif
 
     </div>
 </section>
@@ -206,6 +264,7 @@
 @endsection
 
 @push('scripts')
+@if($data['status'] === 'Disetujui')
 <script>
 let currentTtd = 'kades';
 
@@ -244,4 +303,5 @@ function setTtd(type) {
     document.getElementById('downloadBtnPdf').href = basePdf + '?ttd=' + type + '&t=' + ts;
 }
 </script>
+@endif
 @endpush

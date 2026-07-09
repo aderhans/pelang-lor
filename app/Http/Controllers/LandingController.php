@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
+use App\Models\Surat;
+
 class LandingController extends Controller
 {
     public function index()
     {
-
+        $riwayatSurat = [];
+        if (Auth::guard('warga')->check()) {
+            $riwayatSurat = Surat::where('warga_id', Auth::guard('warga')->id())
+                ->orderBy('created_at', 'desc')
+                ->get();
+        }
 
         $berita = [
             [
@@ -26,6 +34,6 @@ class LandingController extends Controller
             ],
         ];
 
-        return view('pages.landing', compact('berita'));
+        return view('pages.landing', compact('berita', 'riwayatSurat'));
     }
 }

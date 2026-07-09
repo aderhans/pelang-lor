@@ -59,6 +59,7 @@ class SuratController extends Controller
         $tanggal    = now()->locale('id')->isoFormat('D MMMM YYYY');
 
         $data = [
+            'warga_id'        => auth('warga')->check() ? auth('warga')->id() : null,
             'jenis_surat'     => strtoupper(trim($request->jenis_surat)),
             'nomor_surat'     => $nomorSurat,
             'tanggal_surat'   => $tanggal,
@@ -78,6 +79,64 @@ class SuratController extends Controller
         $surat = Surat::create($data);
 
         return redirect()->route('surat.preview', $surat->id);
+    }
+
+    // ---------------------------------------------------------------
+    // EDIT — form edit surat warga (jika status Menunggu)
+    // ---------------------------------------------------------------
+    public function edit(string $id)
+    {
+        $surat = Surat::findOrFail($id);
+
+        // Pastikan hanya pemilik yang bisa edit & status Menunggu
+        if ($surat->warga_id !== auth('warga')->id() || $surat->status !== 'Menunggu') {
+            return redirect()->route('landing')->with('error', 'Anda tidak memiliki akses atau surat sudah diproses.');
+        }
+
+        return view('pages.surat.edit', compact('surat'));
+    }
+
+    // ---------------------------------------------------------------
+    // UPDATE — proses edit surat warga
+    // ---------------------------------------------------------------
+    public function update(Request $request, string $id)
+    {
+        $surat = Surat::findOrFail($id);
+
+        if ($surat->warga_id !== auth('warga')->id() || $surat->status !== 'Menunggu') {
+            return redirect()->route('landing')->with('error', 'Anda tidak memiliki akses atau surat sudah diproses.');
+        }
+
+        $request->validate([
+            'jenis_surat'   => 'required|string|max:100',
+            'nama'          => 'required|string|max:255',
+            'nik'           => 'required|digits:16',
+            'jenis_kelamin' => 'required|in:Laki-Laki,Perempuan',
+            'tempat_lahir'  => 'required|string|max:100',
+            'tanggal_lahir' => 'required|date',
+            'kewarganegaraan' => 'required|string|max:50',
+            'agama'         => 'required|string|max:50',
+            'pekerjaan'     => 'required|string|max:100',
+            'alamat'        => 'required|string|max:500',
+            'keperluan'     => 'required|string|max:300',
+        ]);
+
+        // Perbarui data. (Nomor surat, tanggal surat dibiarkan tetap)
+        $surat->update([
+            'jenis_surat'     => strtoupper(trim($request->jenis_surat)),
+            'nama'            => strtoupper($request->nama),
+            'nik'             => $request->nik,
+            'jenis_kelamin'   => $request->jenis_kelamin,
+            'tempat_lahir'    => $request->tempat_lahir,
+            'tanggal_lahir'   => format_tanggal_indo($request->tanggal_lahir),
+            'kewarganegaraan' => $request->kewarganegaraan ?? 'Indonesia',
+            'agama'           => $request->agama,
+            'pekerjaan'       => $request->pekerjaan,
+            'alamat'          => $request->alamat,
+            'keperluan'       => $request->keperluan,
+        ]);
+
+        return redirect()->route('landing')->with('success', 'Surat keterangan berhasil diperbarui.');
     }
 
     // ---------------------------------------------------------------

@@ -25,7 +25,7 @@ class AdminController extends Controller
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('admin.dashboard'));
+            return redirect()->route('admin.dashboard');
         }
 
         return back()->withErrors([
@@ -38,7 +38,7 @@ class AdminController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('landing');
+        return redirect()->route('admin.login');
     }
 
     public function dashboard()
