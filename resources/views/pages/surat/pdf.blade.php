@@ -148,7 +148,7 @@
     {{-- KOP SURAT --}}
     <div class="surat-kop">
         <div class="surat-kop__logo">
-            <img src="{{ public_path('images/Lambang_Kabupaten_Ngawi.png') }}" alt="Logo Ngawi">
+            <img src="{{ $logoImagePath }}" alt="Logo Ngawi">
         </div>
         <div class="surat-kop__text">
             <p>PEMERINTAH KABUPATEN NGAWI</p>
@@ -239,14 +239,26 @@
         Demikian surat keterangan ini kami buat dengan sebenarnya agar dapatnya dipergunakan sebagaimana mestinya.
     </p>
 
-    {{-- TTD --}}
+    {{-- TTD dengan Gambar Digital --}}
     <table class="surat-ttd-table">
         <tr>
             <td class="surat-ttd-left"></td>
-            <td class="surat-ttd-right">
+            <td class="surat-ttd-right" style="position: relative;">
                 <p>Pelang Lor, {{ $data['tanggal_surat'] }}</p>
                 <p>{{ $jabatan }}</p>
-                <div class="surat-ttd-space"></div>
+                {{-- Area TTD: stempel di kiri, TTD di kanan --}}
+                <div style="position: relative; height: 80pt; margin: 4pt auto;">
+                    @if(!empty($ttdImagePath))
+                        <img src="{{ $ttdImagePath }}" alt="TTD"
+                             style="position: absolute; top: 0; right: 20pt; height: 75pt; width: auto; opacity: 0.92;">
+                    @else
+                        <div style="height: 75pt;"></div>
+                    @endif
+                    @if(!empty($stempelImagePath))
+                        <img src="{{ $stempelImagePath }}" alt="Stempel"
+                             style="position: absolute; top: 5pt; left: 10pt; height: 70pt; width: auto; opacity: 0.55;">
+                    @endif
+                </div>
                 <p class="surat-ttd-name">{{ $nama }}</p>
             </td>
         </tr>

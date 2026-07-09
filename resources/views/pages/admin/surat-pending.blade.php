@@ -32,6 +32,10 @@
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
                 Arsip Surat
             </a>
+            <a href="{{ route('admin.ttd.settings') }}" class="admin-sidebar__link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                Pengaturan TTD
+            </a>
         </nav>
 
         <div class="admin-sidebar__footer">
@@ -65,10 +69,37 @@
             </a>
         </div>
 
+        @if(session('success'))
+            <div class="admin-info-bar" style="background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.2); color: #059669; margin-bottom: 16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="admin-info-bar admin-info-bar--warn" style="margin-bottom: 16px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
         <div class="admin-info-bar admin-info-bar--warn">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            Surat yang <strong>disetujui</strong> akan otomatis masuk ke arsip. Surat yang <strong>ditolak</strong> tidak akan diarsipkan.
+            Pilih <strong>penandatangan</strong> sebelum menyetujui. PDF surat ber-TTD akan dikirim ke email warga.
         </div>
+
+        @php
+            $kadesOk   = $ttdSettings->has('kades')   && $ttdSettings->get('kades')->path_ttd;
+            $sekdesOk  = $ttdSettings->has('sekdes')  && $ttdSettings->get('sekdes')->path_ttd;
+        @endphp
+        @if(!$kadesOk || !$sekdesOk)
+            <div class="admin-info-bar admin-info-bar--warn" style="border-color: #fcd34d; background: rgba(251,191,36,0.1); color: #92400e; margin-top: 12px; margin-bottom: 12px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="10.29 3.86 1.82 18 22.18 18 13.71 3.86 10.29 3.86"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>
+                    Gambar TTD belum lengkap ({{ !$kadesOk ? 'Kades' : '' }}{{ !$kadesOk && !$sekdesOk ? ' & ' : '' }}{{ !$sekdesOk ? 'Sekdes' : '' }}).
+                    <a href="{{ route('admin.ttd.settings') }}" style="color: #92400e; font-weight: 700; text-decoration: underline;">Upload sekarang →</a>
+                </span>
+            </div>
+        @endif
 
         <div class="admin-section">
             @if($surats->count() > 0)
@@ -108,10 +139,18 @@
                                     </a>
                                     <form action="{{ route('admin.surat.approve', $surat->id) }}" method="POST" style="display:inline;">
                                         @csrf
-                                        <button type="submit" class="admin-action-btn admin-action-btn--approve" title="Setujui & Arsipkan">
-                                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                                            Setujui & Arsipkan
-                                        </button>
+                                        <div style="display:inline-flex; align-items:center; gap:6px; flex-wrap: wrap;">
+                                            <select name="penandatangan" required
+                                                style="font-size:12px; padding:5px 8px; border:1px solid #e2e8f0; border-radius:5px; color:#334155; background:#fff; cursor:pointer;">
+                                                <option value="">-- Pilih TTD --</option>
+                                                <option value="kades">Kepala Desa{{ !$kadesOk ? ' ⚠️' : '' }}</option>
+                                                <option value="sekdes">Sekretaris Desa{{ !$sekdesOk ? ' ⚠️' : '' }}</option>
+                                            </select>
+                                            <button type="submit" class="admin-action-btn admin-action-btn--approve" title="Setujui & Kirim Email">
+                                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                                                Setujui & Kirim
+                                            </button>
+                                        </div>
                                     </form>
                                     <form action="{{ route('admin.surat.tolak', $surat->id) }}" method="POST" style="display:inline;">
                                         @csrf

@@ -49,6 +49,18 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 
+        'admin' => [
+            'transport' => 'smtp',
+            'scheme' => env('MAIL_ADMIN_SCHEME'),
+            'url' => env('MAIL_ADMIN_URL'),
+            'host' => env('MAIL_ADMIN_HOST', '127.0.0.1'),
+            'port' => env('MAIL_ADMIN_PORT', 2525),
+            'username' => env('MAIL_ADMIN_USERNAME'),
+            'password' => env('MAIL_ADMIN_PASSWORD'),
+            'timeout' => null,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url(env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],
@@ -112,5 +124,16 @@ return [
         'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
         'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notify Address
+    |--------------------------------------------------------------------------
+    |
+    | The email address to which notifications from the bot will be sent.
+    |
+    */
+
+    'admin_notify_address' => env('MAIL_ADMIN_NOTIFY_ADDRESS', 'admin@example.com'),
 
 ];

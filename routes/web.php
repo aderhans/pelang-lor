@@ -19,13 +19,12 @@ Route::middleware('auth:warga')->group(function () {
 
     // Sistem Surat Keterangan
     Route::prefix('surat')->name('surat.')->group(function () {
+        Route::get('/riwayat', [SuratController::class, 'riwayat'])->name('riwayat');
         Route::get('/', [SuratController::class, 'index'])->name('index');
         Route::post('/ajukan', [SuratController::class, 'store'])->name('store');
         Route::get('/preview/{id}', [SuratController::class, 'preview'])->name('preview');
         Route::get('/edit/{id}', [SuratController::class, 'edit'])->name('edit');
         Route::post('/update/{id}', [SuratController::class, 'update'])->name('update');
-        Route::get('/download/{id}', [SuratController::class, 'download'])->name('download');
-        Route::get('/download-pdf/{id}', [SuratController::class, 'downloadPdf'])->name('download.pdf');
     });
 });
 
@@ -50,5 +49,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/surat/pending', [AdminController::class, 'suratPending'])->name('surat.pending');
         Route::post('/surat/{id}/approve', [AdminController::class, 'approve'])->name('surat.approve');
         Route::post('/surat/{id}/tolak', [AdminController::class, 'tolak'])->name('surat.tolak');
+        // TTD & Stempel Settings
+        Route::get('/ttd-settings', [AdminController::class, 'ttdSettings'])->name('ttd.settings');
+        Route::post('/ttd-settings', [AdminController::class, 'ttdSettingsUpdate'])->name('ttd.settings.update');
     });
 });

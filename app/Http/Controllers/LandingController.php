@@ -9,13 +9,6 @@ class LandingController extends Controller
 {
     public function index()
     {
-        $riwayatSurat = [];
-        if (Auth::guard('warga')->check()) {
-            $riwayatSurat = Surat::where('warga_id', Auth::guard('warga')->id())
-                ->orderBy('created_at', 'desc')
-                ->get();
-        }
-
         $berita = [
             [
                 'judul' => 'Gotong Royong Pembersihan Desa',
@@ -34,6 +27,6 @@ class LandingController extends Controller
             ],
         ];
 
-        return view('pages.landing', compact('berita', 'riwayatSurat'));
+        return view('pages.landing', compact('berita'));
     }
 }

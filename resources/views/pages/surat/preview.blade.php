@@ -65,35 +65,7 @@
             </div>
         @endif
 
-        {{-- ============================================================ --}}
-        {{-- TTD SELECTOR — hanya tampil jika DISETUJUI                  --}}
-        {{-- ============================================================ --}}
-        @if($data['status'] === 'Disetujui')
-        <div class="ttd-selector">
-            <div class="ttd-selector__label">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                Pilih Penandatangan Surat:
-            </div>
-            <div class="ttd-btns">
-                <button type="button" class="ttd-btn ttd-btn--active" id="btnKades" onclick="setTtd('kades')">
-                    <div class="ttd-btn__avatar">K</div>
-                    <div>
-                        <div class="ttd-btn__role">Kepala Desa</div>
-                        <div class="ttd-btn__name">HARIYANA</div>
-                    </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
-                <button type="button" class="ttd-btn" id="btnSekdes" onclick="setTtd('sekdes')">
-                    <div class="ttd-btn__avatar">S</div>
-                    <div>
-                        <div class="ttd-btn__role">Sekretaris Desa</div>
-                        <div class="ttd-btn__name">DIDIK SUPRIYANTO</div>
-                    </div>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left:auto;"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
-            </div>
-        </div>
-        @endif
+
 
         {{-- ============================================================ --}}
         {{-- SURAT PREVIEW                                                --}}
@@ -197,7 +169,7 @@
                     Demikian surat keterangan ini kami buat dengan sebenarnya agar dapatnya dipergunakan sebagaimana mestinya.
                 </p>
 
-                {{-- TTD --}}
+                {{-- TTD Placeholder (Kosong) --}}
                 <div class="surat-ttd">
                     <div class="surat-ttd-box">
                         <p>Pelang Lor, {{ $data['tanggal_surat'] }}</p>
@@ -225,22 +197,6 @@
                 @endif
             </a>
 
-            @if($data['status'] === 'Disetujui')
-            {{-- Tombol Download — hanya tampil jika DISETUJUI --}}
-            <div class="download-group">
-                <a href="{{ route('surat.download', $id) }}?ttd=kades"
-                   class="btn-download btn-download--jpg" id="downloadBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8.5 8.5v7M8.5 12h7M15.5 8.5v7"/></svg>
-                    Download JPG
-                </a>
-                <a href="{{ route('surat.download.pdf', $id) }}?ttd=kades"
-                   class="btn-download btn-download--pdf" id="downloadBtnPdf">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-                    Download PDF
-                </a>
-            </div>
-            @endif
-
         </div>
 
         {{-- ============================================================ --}}
@@ -249,12 +205,12 @@
         @if($data['status'] === 'Disetujui')
         <div class="preview-alert" style="margin-top: 28px; background: #eff6ff; border-color: #bfdbfe; color: #1e3a8a;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <p style="margin: 0;">Surat ini merupakan dokumen digital resmi Desa Pelang Lor. Untuk keperluan yang membutuhkan tanda tangan basah dan stempel asli, silakan datang ke Kantor Desa Pelang Lor pada jam kerja.</p>
+            <p style="margin: 0;">Surat resmi telah <strong>dikirimkan ke email Anda</strong> beserta tanda tangan digital dan stempel. Anda tidak dapat mengunduhnya dari halaman ini.</p>
         </div>
         @elseif($data['status'] === 'Menunggu')
         <div class="preview-alert" style="margin-top: 28px; background: #fffbeb; border-color: #fcd34d; color: #92400e;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <p style="margin: 0;"><strong>Penting:</strong> Simpan atau bookmark URL halaman ini. Anda perlu kembali ke halaman ini setelah surat disetujui admin untuk mengunduh surat dalam format JPG/PDF.</p>
+            <p style="margin: 0;"><strong>Penting:</strong> Surat akan dikirimkan ke email Anda (yang Anda gunakan saat mendaftar) setelah disetujui admin.</p>
         </div>
         @endif
 
@@ -262,46 +218,3 @@
 </section>
 
 @endsection
-
-@push('scripts')
-@if($data['status'] === 'Disetujui')
-<script>
-let currentTtd = 'kades';
-
-const ttdData = {
-    kades: {
-        jabatan: 'Kepala Desa Pelang Lor',
-        nama:    '<strong><u>HARIYANA</u></strong>',
-        param:   'kades'
-    },
-    sekdes: {
-        jabatan: 'Sekretaris Desa Pelang Lor',
-        nama:    '<strong><u>DIDIK SUPRIYANTO</u></strong>',
-        param:   'sekdes'
-    }
-};
-
-function setTtd(type) {
-    currentTtd = type;
-
-    // Update preview jabatan & nama
-    document.getElementById('preview-jabatan').innerHTML = ttdData[type].jabatan;
-    document.getElementById('preview-nama').innerHTML    = ttdData[type].nama;
-
-    // Update tombol aktif
-    document.getElementById('btnKades').classList.toggle('ttd-btn--active', type === 'kades');
-    document.getElementById('btnSekdes').classList.toggle('ttd-btn--active', type === 'sekdes');
-
-    const ts = new Date().getTime();
-
-    // Update link download JPG dengan cache buster
-    const baseJpg = '{{ route('surat.download', $id) }}';
-    document.getElementById('downloadBtn').href = baseJpg + '?ttd=' + type + '&t=' + ts;
-
-    // Update link download PDF dengan cache buster
-    const basePdf = '{{ route('surat.download.pdf', $id) }}';
-    document.getElementById('downloadBtnPdf').href = basePdf + '?ttd=' + type + '&t=' + ts;
-}
-</script>
-@endif
-@endpush
