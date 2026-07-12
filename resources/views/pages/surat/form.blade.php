@@ -13,7 +13,7 @@
             <span>Surat Keterangan</span>
         </nav>
         <h1 class="page-hero__title">Permohonan Surat Keterangan</h1>
-        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Permintaan Anda akan dikirim ke Admin Desa untuk diverifikasi, setelah disetujui surat siap diunduh.</p>
+        <p class="page-hero__desc">Isi formulir di bawah ini dengan data yang benar sesuai KTP/KK. Surat keterangan Anda akan langsung terbuat dan bisa diunduh untuk selanjutnya ditandatangani di Kantor Desa.</p>
     </div>
 </div>
 
@@ -41,8 +41,8 @@
             <div class="info-step">
                 <div class="info-step__num">3</div>
                 <div class="info-step__text">
-                    <strong>Tunggu Persetujuan Admin</strong>
-                    <p>Surat dapat diunduh setelah disetujui</p>
+                    <strong>Unduh Surat Keterangan</strong>
+                    <p>Cetak & bawa ke desa untuk TTD Basah</p>
                 </div>
             </div>
         </div>
@@ -226,8 +226,6 @@
                                    placeholder="Contoh: Melamar Pekerjaan, Mengurus BPJS, Keperluan Sekolah"
                                    required>
                             @error('keperluan') <p class="form-error">{{ $message }}</p> @enderror
-                        </div>
-
                     </div>
                 </div>
             </div>
@@ -240,7 +238,7 @@
                 </p>
                 <button type="submit" class="btn-submit" id="submitBtn">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                    Kirim Permintaan Surat Keterangan
+                    Buat Surat Keterangan
                 </button>
             </div>
 

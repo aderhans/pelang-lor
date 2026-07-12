@@ -29,12 +29,10 @@
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                     Buat Surat Keterangan
                 </a>
-                @if(Auth::guard('warga')->check())
-                <a href="{{ route('surat.riwayat') }}" class="btn-primary-hero" style="background: rgba(16,185,129,0.1); color: #10b981; border: 1px solid rgba(16,185,129,0.2);">
+                <a href="{{ route('surat.riwayat') }}" class="btn-maroon-hero">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
-                    Riwayat Pengajuan
+                    Cek Surat
                 </a>
-                @endif
                 <a href="#layanan" class="btn-ghost-hero">
                     Lihat Layanan
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>
@@ -250,6 +248,16 @@
                 </div>
 <div class="p-panel" id="tab-produk-unggulan">
     <div class="produk-grid">
+        <div class="produk-card">
+            <div class="produk-card__img">
+                <img src="{{ asset('images/produk/monumen_suryo.jpg') }}" alt="Monumen Suryo Desa Pelang Lor">
+            </div>
+            <div class="produk-card__body">
+                <span class="produk-card__label">Pariwisata / Sejarah</span>
+                <h3>Monumen Suryo</h3>
+                <p>Monumen Suryo merupakan situs sejarah kebanggaan Desa Pelang Lor dan Kabupaten Ngawi. Monumen ini dibangun untuk mengenang Gubernur Pertama Jawa Timur, RM Suryo. Tempat ini menjadi wisata edukasi sejarah yang asri dan sering dikunjungi wisatawan dari berbagai daerah.</p>
+            </div>
+        </div>
         <div class="produk-card">
             <div class="produk-card__img">
                 <img src="{{ asset('images/produk/perkutut.jpg') }}" alt="Peternakan Perkutut Desa Pelang Lor">

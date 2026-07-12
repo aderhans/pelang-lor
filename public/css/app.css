@@ -383,6 +383,31 @@ ul {
     background: linear-gradient(135deg, var(--gold-lt) 0%, var(--gold) 100%);
 }
 
+.btn-maroon-hero {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 28px;
+    background: #800000;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: var(--r-full);
+    box-shadow: 0 4px 14px rgba(128, 0, 0, 0.4);
+    transition: all var(--ease);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btn-maroon-hero:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(128, 0, 0, 0.6);
+    background: #5a0000;
+    color: #ffffff;
+}
+
 .btn-ghost-hero {
     display: inline-flex;
     align-items: center;
@@ -1027,11 +1052,13 @@ ul {
     transition: all var(--ease);
 }
 
-.profil__wrap:has(#tab-struktur.active) {
+.profil__wrap:has(#tab-struktur.active),
+.profil__wrap:has(#tab-produk-unggulan.active) {
     grid-template-columns: 1fr;
 }
 
-.profil__wrap:has(#tab-struktur.active) .profil__right {
+.profil__wrap:has(#tab-struktur.active) .profil__right,
+.profil__wrap:has(#tab-produk-unggulan.active) .profil__right {
     display: none;
 }
 
@@ -1357,7 +1384,7 @@ ul {
 /* ====== PRODUK UNGGULAN ====== */
 .produk-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 20px;
     margin-top: 20px;
 }
@@ -1417,8 +1444,8 @@ ul {
 }
 
 @media (max-width: 768px) {
-    .produk-grid {
-        grid-template-columns: 1fr;
+    .produk-card {
+        flex: 0 0 280px; /* Sedikit lebih kecil di mobile */
     }
 }
 

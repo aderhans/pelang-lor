@@ -3,17 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Mail;
-use Spatie\Browsershot\Browsershot;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Surat;
-use App\Mail\NotifikasiAdminMail;
+use Spatie\Browsershot\Browsershot;
 
 class SuratController extends Controller
 {
     // ---------------------------------------------------------------
-    // NOMOR SURAT: 470/[counter].404.617.12/[tahun]
-    // Counter global, increment per surat, disimpan di file
+    // NOMOR SURAT
     // ---------------------------------------------------------------
     protected function generateNomorSurat(): string
     {
@@ -30,31 +27,44 @@ class SuratController extends Controller
         return "470/{$counter}/404.617.12/{$year}";
     }
 
-    // ---------------------------------------------------------------
-    // INDEX — tampilkan form
-    // ---------------------------------------------------------------
     public function index()
     {
         return view('pages.surat.form');
     }
 
     // ---------------------------------------------------------------
-    // RIWAYAT — tampilkan riwayat surat warga
+    // RIWAYAT — form pencarian berdasarkan NIK
     // ---------------------------------------------------------------
     public function riwayat()
     {
-        $riwayatSurat = [];
-        if (auth('warga')->check()) {
-            $riwayatSurat = Surat::where('warga_id', auth('warga')->id())
-                ->orderBy('created_at', 'desc')
-                ->get();
+        return view('pages.warga.riwayat', ['riwayatSurat' => []]);
+    }
+
+    public function cariRiwayat(Request $request)
+    {
+        $request->validate([
+            'nik' => 'required|string|size:16',
+            'tanggal' => 'nullable|date',
+        ], [
+            'nik.required' => 'NIK wajib diisi untuk melihat riwayat surat.',
+            'nik.size' => 'NIK harus 16 digit angka.',
+        ]);
+
+        $query = Surat::where('nik', $request->nik);
+
+        if ($request->filled('tanggal')) {
+            // Karena tanggal di db disimpan sbg string (format_tanggal_indo / teks),
+            // kita gunakan created_at untuk pencarian filter tanggal
+            $query->whereDate('created_at', '=', $request->tanggal);
         }
 
-        return view('pages.warga.riwayat', compact('riwayatSurat'));
+        $riwayatSurat = $query->orderBy('created_at', 'desc')->get();
+
+        return view('pages.warga.riwayat', compact('riwayatSurat'))->withInput($request->all());
     }
 
     // ---------------------------------------------------------------
-    // STORE — simpan ke session → redirect ke preview
+    // STORE — simpan & auto-approve
     // ---------------------------------------------------------------
     public function store(Request $request)
     {
@@ -76,7 +86,6 @@ class SuratController extends Controller
         $tanggal    = now()->locale('id')->isoFormat('D MMMM YYYY');
 
         $data = [
-            'warga_id'        => auth('warga')->check() ? auth('warga')->id() : null,
             'jenis_surat'     => strtoupper(trim($request->jenis_surat)),
             'nomor_surat'     => $nomorSurat,
             'tanggal_surat'   => $tanggal,
@@ -90,47 +99,25 @@ class SuratController extends Controller
             'pekerjaan'       => $request->pekerjaan,
             'alamat'          => $request->alamat,
             'keperluan'       => $request->keperluan,
-            'status'          => 'Menunggu',
         ];
 
         $surat = Surat::create($data);
 
-        // Kirim notifikasi email ke Admin
-        try {
-            Mail::to(config('mail.admin_notify_address'))
-                ->send(new NotifikasiAdminMail($surat));
-        } catch (\Exception $e) {
-            \Log::error('Gagal kirim notifikasi ke admin: ' . $e->getMessage());
-        }
-
-        return redirect()->route('surat.preview', $surat->id);
+        return redirect()->route('surat.preview', $surat->id)->with('success', 'Surat berhasil dibuat!');
     }
 
     // ---------------------------------------------------------------
-    // EDIT — form edit surat warga (jika status Menunggu)
+    // EDIT
     // ---------------------------------------------------------------
     public function edit(string $id)
     {
         $surat = Surat::findOrFail($id);
-
-        // Pastikan hanya pemilik yang bisa edit & status Menunggu
-        if ($surat->warga_id !== auth('warga')->id() || $surat->status !== 'Menunggu') {
-            return redirect()->route('landing')->with('error', 'Anda tidak memiliki akses atau surat sudah diproses.');
-        }
-
         return view('pages.surat.edit', compact('surat'));
     }
 
-    // ---------------------------------------------------------------
-    // UPDATE — proses edit surat warga
-    // ---------------------------------------------------------------
     public function update(Request $request, string $id)
     {
         $surat = Surat::findOrFail($id);
-
-        if ($surat->warga_id !== auth('warga')->id() || $surat->status !== 'Menunggu') {
-            return redirect()->route('landing')->with('error', 'Anda tidak memiliki akses atau surat sudah diproses.');
-        }
 
         $request->validate([
             'jenis_surat'   => 'required|string|max:100',
@@ -142,11 +129,9 @@ class SuratController extends Controller
             'kewarganegaraan' => 'required|string|max:50',
             'agama'         => 'required|string|max:50',
             'pekerjaan'     => 'required|string|max:100',
-            'alamat'        => 'required|string|max:500',
             'keperluan'     => 'required|string|max:300',
         ]);
 
-        // Perbarui data. (Nomor surat, tanggal surat dibiarkan tetap)
         $surat->update([
             'jenis_surat'     => strtoupper(trim($request->jenis_surat)),
             'nama'            => strtoupper($request->nama),
@@ -161,23 +146,105 @@ class SuratController extends Controller
             'keperluan'       => $request->keperluan,
         ]);
 
-        return redirect()->route('landing')->with('success', 'Surat keterangan berhasil diperbarui.');
+        return redirect()->route('surat.preview', $surat->id)->with('success', 'Surat keterangan berhasil diperbarui.');
     }
 
     // ---------------------------------------------------------------
-    // PREVIEW — tampilkan surat digital + toggle TTD
+    // PREVIEW
     // ---------------------------------------------------------------
-    public function preview(string $id)
+    public function preview(Request $request, string $id)
+    {
+        $data = Surat::find($id);
+
+        if (!$data) {
+            return redirect()->route('surat.index')->with('error', 'Data surat tidak ditemukan.');
+        }
+        
+        $ttd = $request->query('ttd', 'kades');
+
+        return view('pages.surat.preview', compact('data', 'id', 'ttd'));
+    }
+
+    // ---------------------------------------------------------------
+    // PDF
+    // ---------------------------------------------------------------
+    public function pdf(Request $request, string $id)
+    {
+        $surat = Surat::findOrFail($id);
+        
+        $penandatanganKey = $request->query('ttd', 'kades');
+        
+        if ($penandatanganKey === 'kades') {
+            $jabatan = 'Kepala Desa Pelang Lor';
+            $nama    = 'HARIYANA';
+        } else {
+            $jabatan = 'Sekretaris Desa Pelang Lor';
+            $nama    = 'DIDIK SUPRIYANTO';
+        }
+
+        $logoImagePath = null;
+        $logoPath = public_path('images/Lambang_Kabupaten_Ngawi.png');
+        if (file_exists($logoPath)) {
+            $logoImagePath = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        $data = $surat->toArray();
+
+        $pdf = Pdf::loadView('pages.surat.pdf', compact('data', 'jabatan', 'nama', 'logoImagePath'))
+            ->setPaper('a4', 'portrait')
+            ->setOption('margin_top', 25.4)
+            ->setOption('margin_right', 25.4)
+            ->setOption('margin_bottom', 25.4)
+            ->setOption('margin_left', 25.4)
+            ->setOption('isHtml5ParserEnabled', true)
+            ->setOption('isRemoteEnabled', true);
+
+        return $pdf->download('Surat_' . preg_replace('/[^a-zA-Z0-9]/', '_', $surat->nomor_surat) . '.pdf');
+    }
+
+    public function jpg(Request $request, string $id)
     {
         $data = Surat::find($id);
 
         if (!$data) {
             return redirect()->route('surat.index')
-                ->with('error', 'Data surat tidak ditemukan. Silakan isi form kembali.');
+                ->with('error', 'Data surat tidak ditemukan.');
         }
 
-        return view('pages.surat.preview', compact('data', 'id'));
+        $ttd = $request->query('ttd', 'kades');
+
+        if ($ttd === 'kades') {
+            $jabatan = 'Kepala Desa Pelang Lor';
+            $nama    = 'HARIYANA';
+        } else {
+            $jabatan = 'Sekretaris Desa Pelang Lor';
+            $nama    = 'DIDIK SUPRIYANTO';
+        }
+
+        // Ubah logo menjadi Base64 string agar tidak menggunakan file:// (diblokir Browsershot)
+        $logoData = base64_encode(file_get_contents(public_path('images/Lambang_Kabupaten_Ngawi.png')));
+        $logoPath = 'data:image/png;base64,' . $logoData;
+
+        // Render blade template ke HTML string
+        $html = view('pages.surat.jpg', compact('data', 'jabatan', 'nama', 'logoPath'))->render();
+
+        // Screenshot via Browsershot — langsung dari HTML string
+        $jpgContent = Browsershot::html($html)
+            ->setChromePath('C:\\Users\\ASUS\\.cache\\puppeteer\\chrome\\win64-150.0.7871.24\\chrome-win64\\chrome.exe')
+            ->setNodeBinary('C:\\Program Files\\nodejs\\node.exe')
+            ->setNpmBinary('C:\\Program Files\\nodejs\\npm.cmd')
+            ->noSandbox()
+            ->windowSize(794, 1123)
+            ->waitUntilNetworkIdle()
+            ->screenshot();
+
+        $filename = 'Surat_' . preg_replace('/[^a-zA-Z0-9]/', '_', $data['nomor_surat']) . '.jpg';
+
+        return response($jpgContent)
+            ->header('Content-Type', 'image/jpeg')
+            ->header('Content-Disposition', 'attachment; filename="' . $filename . '"')
+            ->header('Cache-Control', 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0')
+            ->header('Pragma', 'no-cache')
+            ->header('Expires', '0');
     }
-
-
 }

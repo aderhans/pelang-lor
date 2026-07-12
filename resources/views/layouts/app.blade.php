@@ -34,34 +34,10 @@
                 <li><a href="{{ route('landing') }}#profil" class="navbar__link">Profil Desa</a></li>
                 <li><a href="{{ route('landing') }}#berita" class="navbar__link">Berita</a></li>
                 <li>
-                    <a href="{{ route('surat.index') }}" class="navbar__cta {{ request()->routeIs('surat.*') ? 'active' : '' }}">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-                        Buat Surat
+                    <a href="{{ route('admin.login') }}" class="navbar__cta" style="background: #800000; color: #ffffff; border: none; padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" title="Login Admin">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </a>
                 </li>
-
-                @auth('warga')
-                {{-- WARGA SUDAH LOGIN: tampilkan avatar + logout --}}
-                <li class="navbar__warga-menu" id="wargaMenuWrap">
-                    <button class="navbar__warga-avatar" id="wargaAvatarBtn" type="button" title="Akun Anda">
-                        <span>{{ strtoupper(substr(Auth::guard('warga')->user()->email, 0, 1)) }}</span>
-                    </button>
-                    <div class="navbar__warga-dropdown" id="wargaDropdown">
-                        <div class="navbar__warga-info">
-                            <p class="navbar__warga-email">{{ Auth::guard('warga')->user()->email }}</p>
-                            <p class="navbar__warga-wa">WA: {{ Auth::guard('warga')->user()->whatsapp }}</p>
-                        </div>
-                        <div class="navbar__warga-divider"></div>
-                        <form action="{{ route('warga.logout') }}" method="POST">
-                            @csrf
-                            <button type="submit" class="navbar__warga-logout" id="warga-logout-btn">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                                Keluar
-                            </button>
-                        </form>
-                    </div>
-                </li>
-                @endauth
             </ul>
         </div>
     </nav>
