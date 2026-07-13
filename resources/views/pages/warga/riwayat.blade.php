@@ -69,7 +69,7 @@
                             </td>
                             <td style="padding: 16px; color: #475569;">{{ $surat->created_at->format('d M Y, H:i') }}</td>
                             <td style="padding: 16px; text-align: center;">
-                                <a href="{{ route('surat.preview', $surat->id) }}" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:#10b981; color:#fff; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; transition:0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                                <a href="{{ route('surat.preview', ['id' => $surat->id, 'from' => 'riwayat']) }}" style="display:inline-flex; align-items:center; gap:6px; padding:8px 16px; background:#10b981; color:#fff; border-radius:6px; text-decoration:none; font-size:13px; font-weight:600; transition:0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                                     Lihat Detail / Unduh
                                 </a>

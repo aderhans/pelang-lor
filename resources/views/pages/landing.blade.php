@@ -238,13 +238,15 @@
                 <h2 class="sec-title">Profil Desa Pelang Lor</h2>
                 <p class="profil__sub">Kecamatan Kedunggalar &bull; Kabupaten Ngawi &bull; Jawa Timur</p>
                 <div class="profil__tabs">
-                    <button class="p-tab active" data-tab="sejarah">Sejarah</button>
+                    <button class="p-tab active" data-tab="sejarah">Sejarah Desa</button>
                     <button class="p-tab" data-tab="produk-unggulan">Potensi Unggulan Desa</button>
                     <button class="p-tab" data-tab="struktur">Perangkat</button>
                 </div>
                 <div class="p-panel active" id="tab-sejarah">
-                    <p>Desa Pelang Lor terletak di Kecamatan Kedunggalar, Kabupaten Ngawi, Provinsi Jawa Timur, merupakan sebuah desa dengan sejarah panjang yang erat kaitannya dengan perkembangan wilayah Ngawi.</p>
-                    <p>Dengan kondisi geografis yang strategis, Desa Pelang Lor berkembang menjadi desa yang sejahtera dengan potensi pertanian dan sumber daya alam yang melimpah. Masyarakatnya dikenal dengan semangat gotong royong yang tinggi.</p>
+                    <p>Pelanglor merupakan desa yang terletak di kecamatan Kedunggalar, meski tidak ada dokumentasi tertulis yang menceritakan sejarah desa Pelanglor, namun sejarah berikut ini berdasarkan cerita masyarakat Pelanglor dari mulut ke mulut.
+Pelanglor memiliki dusun yang bernama Pelanggarem dan Tambakselo. Dinamakan Pelanggarem, karena wilayahnya yang dekat dengan bengawan dan mayoritas airnya asin, sehingga mendapat julukan dusun Pelanggarem. Selain itu, masyarakat Pelanggarem juga memanfaatkan kekayaan alam yaitu sungai yang kaya akan ikan sebagai mata pencaharian tambahan masyarakat sekitar.</p>
+                    <p>Selain dusun Pelanggarem, Desa Pelanglor juga memiliki dusun yang bernama Tambakselo. Disebut Tambakselo, sebab di wilayah tersebut terdapat sebuah Tambak (sungai) dan Selo (Batu) yang setiap akhir masa panen padi ketiga selalu diadakan tradisi “Bersih Desa”. 
+Tidak hanya di dusun Tambakselo, di dusun Pelanggarem juga diadakan tradisi “Bersih desa” yang diselenggarakan pada hari Jum’at Legi setiap akhir masa panen Padi ke tiga. Perbedaannya adalah terletak pada tempat pelaksanaanya. Di Pelanggarem tradisi tersebut dilaksanakan di area pemakaman Pelanggarem, sedangkan di Tambakselo, tradisi “Bersih Desa” dilaksanakan di Tambak.</p>
                 </div>
 <div class="p-panel" id="tab-produk-unggulan">
     <div class="produk-grid">
@@ -253,9 +255,9 @@
                 <img src="{{ asset('images/produk/monumen_suryo.jpg') }}" alt="Monumen Suryo Desa Pelang Lor">
             </div>
             <div class="produk-card__body">
-                <span class="produk-card__label">Pariwisata / Sejarah</span>
+                <span class="produk-card__label">Wisata Sejarah</span>
                 <h3>Monumen Suryo</h3>
-                <p>Monumen Suryo merupakan situs sejarah kebanggaan Desa Pelang Lor dan Kabupaten Ngawi. Monumen ini dibangun untuk mengenang Gubernur Pertama Jawa Timur, RM Suryo. Tempat ini menjadi wisata edukasi sejarah yang asri dan sering dikunjungi wisatawan dari berbagai daerah.</p>
+                <p>Monumen Soeryo berdiri di tepi jalan raya Ngawi-Solo, tepat di wilayah Desa Pelang Lor. Monumen ini dibangun untuk mengenang Gubernur pertama Jawa Timur, Raden Mas Tumenggung Ario Soerjo, beserta dua perwira polisi (Kombes M. Doerjat dan Kompol Soeroko) yang gugur akibat kekejaman PKI pada November 1948. Monumen diresmikan pada 28 Oktober 1975 oleh Pangdam VIII/Brawijaya Mayjen TNI Witarmin, dan sekitar 100–200 meter dari monumen utama juga terdapat tugu peringatan di lokasi ditemukannya jenazah korban. Kawasan ini dilengkapi dengan puluhan jenis pohon langka serta kandang burung yang menampilkan koleksi perkutut, kepodang, dan bekisar, sehingga selain bernilai sejarah, kawasan ini juga menjadi tempat persinggahan yang teduh bagi para pelintas jalur Ngawi-Solo. Lokasinya yang strategis membuat Monumen Soeryo dikenal sebagai wisata sejarah berskala nasional di Kabupaten Ngawi.</p>
             </div>
         </div>
         <div class="produk-card">
@@ -263,9 +265,9 @@
                 <img src="{{ asset('images/produk/perkutut.jpg') }}" alt="Peternakan Perkutut Desa Pelang Lor">
             </div>
             <div class="produk-card__body">
-                <span class="produk-card__label">Peternakan</span>
+                <span class="produk-card__label">Ikon Khas Desa</span>
                 <h3>Perkutut</h3>
-                <p>Desa Pelang Lor dikenal sebagai salah satu sentra budidaya burung perkutut di Kabupaten Ngawi. Warga secara turun-temurun mengembangkan perkutut unggulan dengan suara merdu dan kualitas juara, menjadi sumber penghasilan tambahan sekaligus kebanggaan desa.</p>
+                <p>Julukan "Kampung Perkutut" melekat pada Desa Pelang Lor karena mayoritas warganya, khususnya di empat dusun (Tambakselo Timur, Tambakselo Barat, Tambakselo Selatan, dan Pelanggarem), menekuni budi daya burung perkutut. Usaha ini mulai berkembang sejak awal tahun 2000-an, dan pada 2019 Kepala Desa Pelang Lor, Hariyana, secara resmi menetapkan perkutut sebagai produk unggulan desa. Jumlah peternak terus bertambah — dari 44 orang pada 2017 menjadi 158 orang pada 2021 — dengan omzet penjualan mencapai ratusan ekor per bulan. Harga jual bervariasi, mulai dari puluhan ribu rupiah untuk anakan hingga puluhan juta rupiah untuk jenis langka seperti perkutut Majapahit. Pemerintah setempat turut mendukung melalui pembentukan kelompok usaha bersama (Kube) binaan Dinas Sosial Kabupaten Ngawi, menjadikan sektor ini sebagai salah satu penopang ekonomi rumah tangga yang signifikan di desa ini.</p>
             </div>
         </div>
         <div class="produk-card">
@@ -274,8 +276,8 @@
             </div>
             <div class="produk-card__body">
                 <span class="produk-card__label">Peternakan</span>
-                <h3>Ikan Lele</h3>
-                <p>Peternakan ikan lele menjadi salah satu produk unggulan warga Desa Pelang Lor, dikelola secara mandiri melalui kolam-kolam budidaya yang tersebar di beberapa dusun. Usaha ini menjadi sumber penghasilan tambahan yang menjanjikan bagi warga sekaligus mendukung ketahanan pangan desa.</p>
+                <h3>Budidaya Ikan Lele</h3>
+                <p>Sebagai bagian dari upaya penguatan ketahanan pangan desa, budidaya ikan lele mulai dikembangkan sebagai salah satu unit usaha produktif warga. Pola ini sejalan dengan tren umum di desa-desa Kabupaten Ngawi, di mana budidaya lele — baik melalui kolam terpal, kolam pendederan, maupun sistem bioflok — banyak dikelola bersama BUMDes untuk mendukung kemandirian pangan protein warga sekaligus membuka peluang usaha tambahan.</p>
             </div>
         </div>
     </div>
