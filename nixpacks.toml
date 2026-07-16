@@ -13,7 +13,9 @@ nixPkgs = [
   "php82Extensions.ctype",
   "php82Extensions.bcmath",
   "php82Extensions.openssl",
-  "composer"
+  "composer",
+  "nodejs_20",
+  "chromium"
 ]
 
 [phases.build]

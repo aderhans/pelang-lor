@@ -229,14 +229,26 @@ class SuratController extends Controller
         $html = view('pages.surat.jpg', compact('data', 'jabatan', 'nama', 'logoPath'))->render();
 
         // Screenshot via Browsershot — langsung dari HTML string
-        $jpgContent = Browsershot::html($html)
-            ->setChromePath('C:\\Users\\ASUS\\.cache\\puppeteer\\chrome\\win64-150.0.7871.24\\chrome-win64\\chrome.exe')
-            ->setNodeBinary('C:\\Program Files\\nodejs\\node.exe')
-            ->setNpmBinary('C:\\Program Files\\nodejs\\npm.cmd')
+        // Path Chrome/Node dibaca dari .env agar bisa pindah hosting kapan saja
+        $browsershot = Browsershot::html($html)
             ->noSandbox()
             ->windowSize(794, 1123)
-            ->waitUntilNetworkIdle()
-            ->screenshot();
+            ->waitUntilNetworkIdle();
+
+        // Set Chrome path jika tersedia di environment (untuk semua OS & hosting)
+        if (env('CHROME_PATH')) {
+            $browsershot->setChromePath(env('CHROME_PATH'));
+        }
+
+        // Set Node & NPM path jika tersedia di environment
+        if (env('NODE_BINARY')) {
+            $browsershot->setNodeBinary(env('NODE_BINARY'));
+        }
+        if (env('NPM_BINARY')) {
+            $browsershot->setNpmBinary(env('NPM_BINARY'));
+        }
+
+        $jpgContent = $browsershot->screenshot();
 
         $filename = 'Surat_' . preg_replace('/[^a-zA-Z0-9]/', '_', $data['nomor_surat']) . '.jpg';
 
