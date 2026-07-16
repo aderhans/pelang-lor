@@ -14,13 +14,15 @@ nixPkgs = [
   "php82Extensions.bcmath",
   "php82Extensions.openssl",
   "composer",
-  "nodejs_20",
+  "nodejs",
   "chromium"
 ]
 
+[phases.install]
+cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
+
 [phases.build]
 cmds = [
-  "composer install --no-dev --optimize-autoloader --no-interaction",
   "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache"
