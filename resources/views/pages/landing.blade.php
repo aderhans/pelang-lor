@@ -252,7 +252,7 @@ Tidak hanya di dusun Tambakselo, di dusun Pelanggarem juga diadakan tradisi “B
     <div class="produk-grid">
         <div class="produk-card">
             <div class="produk-card__img">
-                <img src="{{ asset('images/produk/monumen_suryo.jpg') }}" alt="Monumen Suryo Desa Pelang Lor">
+                <img src="{{ asset('images/produk/Monumen_Suryo.jpg') }}" alt="Monumen Suryo Desa Pelang Lor">
             </div>
             <div class="produk-card__body">
                 <span class="produk-card__label">Wisata Sejarah</span>
