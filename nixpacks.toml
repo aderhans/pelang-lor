@@ -1,28 +1,12 @@
-[phases.setup]
-nixPkgs = [
-  "php84",
-  "php84Extensions.pdo",
-  "php84Extensions.pdo_mysql",
-  "php84Extensions.mbstring",
-  "php84Extensions.xml",
-  "php84Extensions.curl",
-  "php84Extensions.zip",
-  "php84Extensions.gd",
-  "php84Extensions.fileinfo",
-  "php84Extensions.tokenizer",
-  "php84Extensions.ctype",
-  "php84Extensions.bcmath",
-  "php84Extensions.openssl",
-  "composer",
-  "nodejs",
-  "chromium"
-]
+# Biarkan nixpacks auto-detect PHP version dari composer.json (^8.4)
+# Kita hanya tambahkan nodejs & chromium yang dibutuhkan untuk fitur Unduh JPG
 
-[phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader --no-interaction"]
+[phases.setup]
+nixPkgs = ["nodejs", "chromium"]
 
 [phases.build]
 cmds = [
+  "composer install --no-dev --optimize-autoloader --no-interaction",
   "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache"
