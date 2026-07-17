@@ -1,14 +1,18 @@
 # Railway deployment config (nixpacks)
 # PHP auto-detected from composer.json (^8.4)
-# nodejs & chromium dibutuhkan untuk fitur Unduh JPG via Browsershot
+# Set NIXPACKS_PHP_EXTENSIONS=gd,bcmath,mbstring,pdo_mysql,xml,fileinfo,zip di Railway Variables
 
 [phases.setup]
-nixPkgs = ["nodejs", "chromium", "nodejs_20"]
+nixPkgs = ["nodejs_20", "chromium"]
 
 [phases.build]
 cmds = [
   "composer install --no-dev --optimize-autoloader --no-interaction",
-  "php artisan storage:link",
+  # Symlink agar node/npm/chromium bisa ditemukan PHP via shell_exec saat runtime
+  "ln -sf $(which node) /usr/local/bin/node || true",
+  "ln -sf $(which npm) /usr/local/bin/npm || true",
+  "ln -sf $(which chromium) /usr/local/bin/chromium || true",
+  "php artisan storage:link || true",
   "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache"

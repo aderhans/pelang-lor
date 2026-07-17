@@ -243,8 +243,14 @@ class SuratController extends Controller
             // Set Chrome path dari .env atau auto-detect
             $chromePath = env('CHROME_PATH');
             if (!$chromePath) {
-                // Coba auto-detect di Linux/Railway
-                foreach (['/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome'] as $path) {
+                // Auto-detect di Linux/Railway (nixpacks symlink + fallback paths)
+                foreach ([
+                    '/usr/local/bin/chromium',
+                    '/usr/bin/chromium',
+                    '/usr/bin/chromium-browser',
+                    '/usr/bin/google-chrome',
+                    '/run/current-system/sw/bin/chromium',
+                ] as $path) {
                     if (file_exists($path)) {
                         $chromePath = $path;
                         break;
@@ -258,7 +264,13 @@ class SuratController extends Controller
             // Set Node binary
             $nodePath = env('NODE_BINARY');
             if (!$nodePath) {
-                $nodePath = trim(shell_exec('which node 2>/dev/null') ?? '');
+                // Cek /usr/local/bin dulu (symlink dari nixpacks), lalu which
+                foreach (['/usr/local/bin/node', '/usr/bin/node'] as $p) {
+                    if (file_exists($p)) { $nodePath = $p; break; }
+                }
+                if (!$nodePath) {
+                    $nodePath = trim(shell_exec('which node 2>/dev/null') ?? '');
+                }
             }
             if ($nodePath && file_exists($nodePath)) {
                 $browsershot->setNodeBinary($nodePath);
@@ -267,7 +279,12 @@ class SuratController extends Controller
             // Set NPM binary
             $npmPath = env('NPM_BINARY');
             if (!$npmPath) {
-                $npmPath = trim(shell_exec('which npm 2>/dev/null') ?? '');
+                foreach (['/usr/local/bin/npm', '/usr/bin/npm'] as $p) {
+                    if (file_exists($p)) { $npmPath = $p; break; }
+                }
+                if (!$npmPath) {
+                    $npmPath = trim(shell_exec('which npm 2>/dev/null') ?? '');
+                }
             }
             if ($npmPath && file_exists($npmPath)) {
                 $browsershot->setNpmBinary($npmPath);
