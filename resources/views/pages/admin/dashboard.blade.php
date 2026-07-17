@@ -2,7 +2,27 @@
 @section('title', 'Dashboard Admin')
 
 @section('content')
+
+{{-- Overlay for mobile sidebar --}}
+<div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
 <div class="admin-layout">
+
+    {{-- MOBILE TOPBAR (visible on mobile only) --}}
+    <div class="admin-mobile-toggle" id="adminSidebarToggle">
+        <div class="admin-mobile-toggle__brand">
+            <img src="{{ asset('images/Lambang_Kabupaten_Ngawi.png') }}" alt="Logo" style="width:30px;height:auto;opacity:0.9;">
+            <div>
+                <div class="admin-mobile-toggle__name">Desa Pelang Lor</div>
+                <div class="admin-mobile-toggle__sub">Panel Admin</div>
+            </div>
+        </div>
+        <div class="admin-mobile-hamburger" id="adminSidebarHamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
 
     {{-- SIDEBAR --}}
     <aside class="admin-sidebar">
@@ -20,6 +40,10 @@
             <a href="{{ route('admin.dashboard') }}" class="admin-sidebar__link admin-sidebar__link--active">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                 Arsip Surat
+            </a>
+            <a href="{{ route('admin.berita.index') }}" class="admin-sidebar__link">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h7"/><circle cx="18" cy="18" r="4"/><path d="M18 16v2l1 1"/></svg>
+                Kelola Berita
             </a>
         </nav>
 

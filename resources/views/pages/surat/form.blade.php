@@ -154,7 +154,7 @@
                         {{-- 4b. Tanggal Lahir --}}
                         <div class="form-group">
                             <label class="form-label" for="tanggal_lahir">
-                                Tanggal Lahir <span class="required">*</span>
+                                <span class="field-num">4b</span> Tanggal Lahir <span class="required">*</span>
                             </label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir"
                                    class="form-input @error('tanggal_lahir') is-error @enderror"

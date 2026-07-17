@@ -1,16 +1,18 @@
-# Biarkan nixpacks auto-detect PHP version dari composer.json (^8.4)
-# Kita hanya tambahkan nodejs & chromium yang dibutuhkan untuk fitur Unduh JPG
+# Railway deployment config (nixpacks)
+# PHP auto-detected from composer.json (^8.4)
+# nodejs & chromium dibutuhkan untuk fitur Unduh JPG via Browsershot
 
 [phases.setup]
-nixPkgs = ["nodejs", "chromium"]
+nixPkgs = ["nodejs", "chromium", "nodejs_20"]
 
 [phases.build]
 cmds = [
   "composer install --no-dev --optimize-autoloader --no-interaction",
+  "php artisan storage:link",
   "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache"
 ]
 
 [start]
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan migrate --force && php artisan db:seed --class=AdminSeeder --force ; php artisan serve --host=0.0.0.0 --port=$PORT"

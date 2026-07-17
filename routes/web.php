@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SuratController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\BeritaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,9 @@ use App\Http\Controllers\AdminController;
 
 // Landing Page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
+
+// Berita Desa (Publik)
+Route::get('/berita/{slug}', [BeritaController::class, 'show'])->name('berita.show');
 
 // Sistem Surat Keterangan (Tanpa Login Warga)
 Route::prefix('surat')->name('surat.')->group(function () {
@@ -37,5 +41,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::middleware('auth')->group(function () {
         Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+
+        // Berita CRUD
+        Route::prefix('berita')->name('berita.')->group(function () {
+            Route::get('/',             [BeritaController::class, 'index'])->name('index');
+            Route::get('/tambah',       [BeritaController::class, 'create'])->name('create');
+            Route::post('/',            [BeritaController::class, 'store'])->name('store');
+            Route::get('/{berita}/edit',[BeritaController::class, 'edit'])->name('edit');
+            Route::put('/{berita}',     [BeritaController::class, 'update'])->name('update');
+            Route::patch('/{berita}/toggle', [BeritaController::class, 'togglePublish'])->name('toggle');
+            Route::delete('/{berita}',  [BeritaController::class, 'destroy'])->name('destroy');
+        });
     });
 });

@@ -363,6 +363,8 @@ Tidak hanya di dusun Tambakselo, di dusun Pelanggarem juga diadakan tradisi “B
                         <div class="map-info-row"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg><span>Kode Pos 63254</span></div>
                     </div>
                 </div>
+                         </div>
+                </div>
             </div>
         </div>
     </div>
@@ -375,24 +377,37 @@ Tidak hanya di dusun Tambakselo, di dusun Pelanggarem juga diadakan tradisi “B
             <span class="label-pill">Informasi Terkini</span>
             <h2 class="sec-title">Berita Desa</h2>
         </div>
+
+        @if($berita->isEmpty())
+        <div style="text-align:center;padding:60px 20px;background:#fff;border-radius:20px;border:1px solid #e2e8f0;">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" stroke-width="1.5" style="margin-bottom:16px;"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+            <p style="color:#64748b;font-size:16px;margin:0;">Belum ada berita yang dipublikasikan.</p>
+        </div>
+        @else
         <div class="berita__grid">
             @foreach($berita as $index => $item)
             <article class="berita-card {{ $index === 0 ? 'berita-card--featured' : '' }}">
                 <div class="berita-card__img">
-                    <div class="berita-card__placeholder">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-                    </div>
+                    @if($item->gambar)
+                        <img src="{{ Storage::url($item->gambar) }}" alt="{{ $item->judul }}"
+                             style="width:100%;height:100%;object-fit:cover;display:block;border-radius:inherit;">
+                    @else
+                        <div class="berita-card__placeholder">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+                        </div>
+                    @endif
                     @if($index === 0)<span class="berita-card__badge">Utama</span>@endif
                 </div>
                 <div class="berita-card__body">
-                    <span class="berita-card__date">{{ $item['tanggal'] }}</span>
-                    <h3 class="berita-card__title">{{ $item['judul'] }}</h3>
-                    <p class="berita-card__excerpt">{{ $item['ringkasan'] }}</p>
-                    <a href="#" class="berita-card__more">Selengkapnya <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
+                    <span class="berita-card__date">{{ $item->tanggal->locale('id')->isoFormat('D MMMM YYYY') }}</span>
+                    <h3 class="berita-card__title">{{ $item->judul }}</h3>
+                    <p class="berita-card__excerpt">{{ $item->ringkasan }}</p>
+                    <a href="{{ route('berita.show', $item->slug) }}" class="berita-card__more">Selengkapnya <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>
                 </div>
             </article>
             @endforeach
         </div>
+        @endif
     </div>
 </section>
 
