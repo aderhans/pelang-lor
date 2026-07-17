@@ -19,4 +19,6 @@ cmds = [
 ]
 
 [start]
-cmd = "php artisan migrate --force && php artisan db:seed --class=AdminSeeder --force ; php artisan serve --host=0.0.0.0 --port=$PORT"
+# Seeder hanya dijalankan sekali (manual via Railway Console)
+# php artisan db:seed --class=AdminSeeder --force
+cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"

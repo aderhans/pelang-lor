@@ -9,13 +9,19 @@ class AdminSeeder extends Seeder
 {
     public function run(): void
     {
-        // updateOrCreate — aman dijalankan berulang kali saat re-deploy Railway
-        \App\Models\User::updateOrCreate(
-            ['email' => 'admin@pelanglor.desa.id'],
-            [
-                'name'     => 'Admin Desa',
-                'password' => Hash::make('password'),
-            ]
-        );
+        try {
+            // firstOrCreate — hanya insert jika belum ada, tidak update
+            // Tidak akan pernah throw UniqueConstraintViolationException
+            \App\Models\User::firstOrCreate(
+                ['email' => 'admin@pelanglor.desa.id'],
+                [
+                    'name'     => 'Admin Desa',
+                    'password' => Hash::make('password'),
+                ]
+            );
+        } catch (\Exception $e) {
+            // Admin sudah ada, abaikan error
+            \Log::info('AdminSeeder: Admin already exists, skipping. ' . $e->getMessage());
+        }
     }
 }
