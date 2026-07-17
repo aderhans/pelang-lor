@@ -47,7 +47,8 @@ return [
             // Gunakan ?: bukan env() default — karena Railway mungkin set nilai DB_ sebagai string kosong,
             // dan env('KEY', 'default') hanya pakai default jika nilai NULL (bukan empty string).
             // Operator ?: menganggap string kosong sebagai falsy dan fallback ke variabel MYSQL* Railway.
-            'url' => env('DATABASE_URL') ?: env('DB_URL'),
+            // Tambahkan MYSQL_URL karena Railway otomatis membuat ini untuk MySQL service.
+            'url' => env('DATABASE_URL') ?: env('DB_URL') ?: env('MYSQL_URL'),
             'host' => env('DB_HOST') ?: env('MYSQLHOST', '127.0.0.1'),
             'port' => env('DB_PORT') ?: env('MYSQLPORT', '3306'),
             'database' => env('DB_DATABASE') ?: env('MYSQLDATABASE', 'laravel'),

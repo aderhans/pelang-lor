@@ -18,6 +18,5 @@ cmds = [
 ]
 
 [start]
-# Hapus cache config tanpa bootstrap Laravel (menghindari bug DB query saat config:clear)
-# Gunakan --verbose pada migrate agar Railway logs menunjukkan migration mana yang gagal
-cmd = "rm -f bootstrap/cache/config.php bootstrap/cache/routes.php bootstrap/cache/services.php || true && php artisan storage:link --force 2>&1 || true && php artisan migrate --force --verbose && php artisan serve --host=0.0.0.0 --port=$PORT"
+# Cetak semua env vars (disaring untuk MYSQL) untuk memastikan variabel Railway benar-benar ada
+cmd = "env | grep -i mysql; rm -f bootstrap/cache/config.php bootstrap/cache/routes.php bootstrap/cache/services.php || true && php artisan storage:link --force 2>&1 || true && php artisan migrate --force --verbose && php artisan serve --host=0.0.0.0 --port=$PORT"
