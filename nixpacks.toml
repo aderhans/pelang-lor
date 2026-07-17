@@ -8,6 +8,7 @@ nixPkgs = ["nodejs_20", "chromium"]
 [phases.build]
 cmds = [
   "composer install --no-dev --optimize-autoloader --no-interaction",
+  "cp .env.example .env || true",
   # Symlink agar node/npm/chromium bisa ditemukan PHP via shell_exec saat runtime
   "ln -sf $(which node) /usr/local/bin/node || true",
   "ln -sf $(which npm) /usr/local/bin/npm || true",
