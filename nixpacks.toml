@@ -1,6 +1,9 @@
 # Railway deployment config (nixpacks)
 # PHP auto-detected from composer.json (^8.4)
-# Set NIXPACKS_PHP_EXTENSIONS=gd,bcmath,mbstring,pdo_mysql,xml,fileinfo,zip di Railway Variables
+#
+# PENTING: Jangan jalankan config:cache/route:cache di build phase!
+# Variabel MYSQL dari Railway hanya tersedia saat RUNTIME, bukan saat build.
+# Jika di-cache saat build, Laravel akan menyimpan 127.0.0.1 sebagai host DB.
 
 [phases.setup]
 nixPkgs = ["nodejs_20", "chromium"]
@@ -8,18 +11,13 @@ nixPkgs = ["nodejs_20", "chromium"]
 [phases.build]
 cmds = [
   "composer install --no-dev --optimize-autoloader --no-interaction",
-  "cp .env.example .env || true",
   # Symlink agar node/npm/chromium bisa ditemukan PHP via shell_exec saat runtime
   "ln -sf $(which node) /usr/local/bin/node || true",
   "ln -sf $(which npm) /usr/local/bin/npm || true",
-  "ln -sf $(which chromium) /usr/local/bin/chromium || true",
-  "php artisan storage:link || true",
-  "php artisan config:cache",
-  "php artisan route:cache",
-  "php artisan view:cache"
+  "ln -sf $(which chromium) /usr/local/bin/chromium || true"
 ]
 
 [start]
-# Seeder hanya dijalankan sekali (manual via Railway Console)
-# php artisan db:seed --class=AdminSeeder --force
-cmd = "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+# config:clear wajib dijalankan pertama agar Railway env vars dibaca segar (bukan dari cache build yg salah)
+# storage:link perlu dijalankan saat runtime karena Railway tidak menyimpan symlink antar deploy
+cmd = "php artisan config:clear || true && php artisan storage:link --force || true && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
