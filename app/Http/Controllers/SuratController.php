@@ -235,17 +235,30 @@ class SuratController extends Controller
             ->windowSize(794, 1123)
             ->waitUntilNetworkIdle();
 
-        // Set Chrome path jika tersedia di environment (untuk semua OS & hosting)
-        if (env('CHROME_PATH')) {
-            $browsershot->setChromePath(env('CHROME_PATH'));
+        // Set Chrome path
+        $chromePath = env('CHROME_PATH');
+        if (!$chromePath) {
+            $chromePath = exec('which chromium') ?: exec('which chromium-browser');
+        }
+        if ($chromePath) {
+            $browsershot->setChromePath($chromePath);
         }
 
-        // Set Node & NPM path jika tersedia di environment
-        if (env('NODE_BINARY')) {
-            $browsershot->setNodeBinary(env('NODE_BINARY'));
+        // Set Node & NPM path
+        $nodePath = env('NODE_BINARY');
+        if (!$nodePath) {
+            $nodePath = exec('which node');
         }
-        if (env('NPM_BINARY')) {
-            $browsershot->setNpmBinary(env('NPM_BINARY'));
+        if ($nodePath) {
+            $browsershot->setNodeBinary($nodePath);
+        }
+
+        $npmPath = env('NPM_BINARY');
+        if (!$npmPath) {
+            $npmPath = exec('which npm');
+        }
+        if ($npmPath) {
+            $browsershot->setNpmBinary($npmPath);
         }
 
         $jpgContent = $browsershot->screenshot();
