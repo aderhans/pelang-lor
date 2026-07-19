@@ -26,6 +26,7 @@ Route::prefix('surat')->name('surat.')->group(function () {
     Route::get('/edit/{id}', [SuratController::class, 'edit'])->name('edit');
     Route::post('/update/{id}', [SuratController::class, 'update'])->name('update');
     Route::get('/pdf/{id}', [SuratController::class, 'pdf'])->name('pdf');
+    Route::get('/html/{id}', [SuratController::class, 'html'])->name('html'); // For JPG generation
     Route::get('/jpg/{id}', [SuratController::class, 'jpg'])->name('jpg');
     
     // Pencarian Riwayat berdasarkan NIK

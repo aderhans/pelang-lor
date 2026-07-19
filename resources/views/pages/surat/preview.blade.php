@@ -242,40 +242,45 @@
         btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Memproses...';
 
         try {
-            // Simpan style aslinya
-            const originalWidth = suratEl.style.width;
-            const originalMaxWidth = suratEl.style.maxWidth;
-            const originalPadding = suratEl.style.padding;
+            // Kita gunakan iframe tersembunyi yang memuat layout PDF asli (A4, Times New Roman)
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'absolute';
+            iframe.style.width = '794px';
+            iframe.style.height = '1123px';
+            iframe.style.top = '-9999px';
+            iframe.style.left = '-9999px';
             
-            // Paksa ke ukuran A4 Desktop (794px) agar layout tidak pecah di HP
-            suratEl.style.width = '794px';
-            suratEl.style.maxWidth = '794px';
-            suratEl.style.padding = '40px 60px'; // padding A4 standar
-            
-            // Beri waktu sejenak agar browser merender perubahan width
-            await new Promise(r => setTimeout(r, 100));
+            // Set sumber iframe ke route HTML yang baru saja kita buat
+            const url = `{{ route('surat.html', $id) }}?ttd={{ $ttd }}`;
+            iframe.src = url;
+            document.body.appendChild(iframe);
 
-            const canvas = await html2canvas(suratEl, {
-                scale: 2, // Retina resolution
-                useCORS: true,
-                allowTaint: false,
-                backgroundColor: '#ffffff',
-                logging: false,
-                windowWidth: 794,
-                width: 794,
-                onclone: (clonedDoc) => {
-                    const clonedEl = clonedDoc.getElementById('suratPreview');
-                    if(clonedEl) {
-                        clonedEl.style.boxShadow = 'none';
-                        clonedEl.style.margin = '0';
-                    }
-                }
+            const canvas = await new Promise((resolve, reject) => {
+                iframe.onload = () => {
+                    // Beri waktu 500ms agar font Times New Roman dan logo termuat sempurna di dalam iframe
+                    setTimeout(async () => {
+                        try {
+                            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                            const c = await html2canvas(iframeDoc.body, {
+                                scale: 2, // Retina resolution
+                                useCORS: true,
+                                allowTaint: false,
+                                backgroundColor: '#ffffff',
+                                logging: false,
+                                windowWidth: 794,
+                                width: 794
+                            });
+                            resolve(c);
+                        } catch (err) {
+                            reject(err);
+                        }
+                    }, 500);
+                };
+                iframe.onerror = (err) => reject(err);
             });
 
-            // Kembalikan ke style semula agar tampilan di layar HP kembali normal
-            suratEl.style.width = originalWidth;
-            suratEl.style.maxWidth = originalMaxWidth;
-            suratEl.style.padding = originalPadding;
+            // Hapus iframe setelah selesai
+            document.body.removeChild(iframe);
 
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const nomorSurat = '{{ preg_replace("/[^a-zA-Z0-9]/", "_", $data["nomor_surat"]) }}';

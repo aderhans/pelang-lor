@@ -198,11 +198,40 @@ class SuratController extends Controller
 
             return $pdf->download($filename);
         } catch (\Exception $e) {
-            \Log::error('PDF generation error: ' . $e->getMessage());
-            return back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+            \Log::error('PDF Error: ' . $e->getMessage());
+            return back()->with('error', 'Terjadi kesalahan saat memproses PDF: ' . $e->getMessage());
         }
     }
 
+    // ---------------------------------------------------------------
+    // HTML FOR JPG CAPTURE
+    // ---------------------------------------------------------------
+    public function html(Request $request, string $id)
+    {
+        $surat = Surat::findOrFail($id);
+
+        $penandatanganKey = $request->query('ttd', 'kades');
+
+        if ($penandatanganKey === 'kades') {
+            $jabatan = 'Kepala Desa Pelang Lor';
+            $nama    = 'HARIYANA';
+        } else {
+            $jabatan = 'Sekretaris Desa Pelang Lor';
+            $nama    = 'DIDIK SUPRIYANTO';
+        }
+
+        $logoImagePath = null;
+        $logoPath = public_path('images/Lambang_Kabupaten_Ngawi.png');
+        if (file_exists($logoPath)) {
+            $logoImagePath = 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath));
+        }
+
+        $data = $surat->toArray();
+
+        // Return the exact same view as PDF, but as HTML
+        return view('pages.surat.pdf', compact('data', 'jabatan', 'nama', 'logoImagePath'));
+    }
+}
     // ---------------------------------------------------------------
     // JPG (Browsershot)
     // ---------------------------------------------------------------
