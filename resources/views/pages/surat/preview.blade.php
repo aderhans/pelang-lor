@@ -242,14 +242,40 @@
         btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Memproses...';
 
         try {
+            // Simpan style aslinya
+            const originalWidth = suratEl.style.width;
+            const originalMaxWidth = suratEl.style.maxWidth;
+            const originalPadding = suratEl.style.padding;
+            
+            // Paksa ke ukuran A4 Desktop (794px) agar layout tidak pecah di HP
+            suratEl.style.width = '794px';
+            suratEl.style.maxWidth = '794px';
+            suratEl.style.padding = '40px 60px'; // padding A4 standar
+            
+            // Beri waktu sejenak agar browser merender perubahan width
+            await new Promise(r => setTimeout(r, 100));
+
             const canvas = await html2canvas(suratEl, {
-                scale: 2,
+                scale: 2, // Retina resolution
                 useCORS: true,
                 allowTaint: false,
                 backgroundColor: '#ffffff',
                 logging: false,
-                imageTimeout: 15000,
+                windowWidth: 794,
+                width: 794,
+                onclone: (clonedDoc) => {
+                    const clonedEl = clonedDoc.getElementById('suratPreview');
+                    if(clonedEl) {
+                        clonedEl.style.boxShadow = 'none';
+                        clonedEl.style.margin = '0';
+                    }
+                }
             });
+
+            // Kembalikan ke style semula agar tampilan di layar HP kembali normal
+            suratEl.style.width = originalWidth;
+            suratEl.style.maxWidth = originalMaxWidth;
+            suratEl.style.padding = originalPadding;
 
             const imgData = canvas.toDataURL('image/jpeg', 0.95);
             const nomorSurat = '{{ preg_replace("/[^a-zA-Z0-9]/", "_", $data["nomor_surat"]) }}';
