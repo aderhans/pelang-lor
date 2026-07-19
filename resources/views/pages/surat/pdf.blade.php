@@ -15,16 +15,6 @@
             color: #000000;
             background: #ffffff;
             padding: 2.54cm;
-            box-sizing: border-box;
-            margin: 0 auto;
-        }
-
-        /* Hanya berlaku saat dipanggil via iframe untuk html2canvas (bukan DomPDF) */
-        @media screen {
-            body {
-                width: 210mm;
-                min-height: 297mm;
-            }
         }
 
         /* ── KOP SURAT ─────────────────────────── */

@@ -13,7 +13,7 @@
             <span>Edit Surat</span>
         </nav>
         <h1 class="page-hero__title">Edit Surat Keterangan</h1>
-        <p class="page-hero__desc">Perbarui data surat Anda di bawah ini. Anda hanya dapat mengubah data selama surat belum diproses oleh Admin Desa.</p>
+        <p class="page-hero__desc">Perbarui data surat Anda di bawah ini.</p>
     </div>
 </div>
 
@@ -152,10 +152,10 @@
                             @error('tempat_lahir') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 4b. Tanggal Lahir --}}
+                        {{-- 5. Tanggal Lahir --}}
                         <div class="form-group">
                             <label class="form-label" for="tanggal_lahir">
-                                <span class="field-num">4b</span> Tanggal Lahir <span class="required">*</span>
+                                <span class="field-num">5</span> Tanggal Lahir <span class="required">*</span>
                             </label>
                             <input type="date" id="tanggal_lahir" name="tanggal_lahir"
                                    class="form-input @error('tanggal_lahir') is-error @enderror"
@@ -164,10 +164,10 @@
                             @error('tanggal_lahir') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 5. Kewarganegaraan --}}
+                        {{-- 6. Kewarganegaraan --}}
                         <div class="form-group">
                             <label class="form-label" for="kewarganegaraan">
-                                <span class="field-num">5</span> Kewarganegaraan <span class="required">*</span>
+                                <span class="field-num">6</span> Kewarganegaraan <span class="required">*</span>
                             </label>
                             <input type="text" id="kewarganegaraan" name="kewarganegaraan"
                                    class="form-input"
@@ -175,10 +175,10 @@
                                    required>
                         </div>
 
-                        {{-- 6. Agama --}}
+                        {{-- 7. Agama --}}
                         <div class="form-group">
                             <label class="form-label" for="agama">
-                                <span class="field-num">6</span> Agama <span class="required">*</span>
+                                <span class="field-num">7</span> Agama <span class="required">*</span>
                             </label>
                             <select id="agama" name="agama"
                                     class="form-input form-input--select @error('agama') is-error @enderror"
@@ -191,10 +191,10 @@
                             @error('agama') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 7. Pekerjaan --}}
+                        {{-- 8. Pekerjaan --}}
                         <div class="form-group">
                             <label class="form-label" for="pekerjaan">
-                                <span class="field-num">7</span> Pekerjaan <span class="required">*</span>
+                                <span class="field-num">8</span> Pekerjaan <span class="required">*</span>
                             </label>
                             <input type="text" id="pekerjaan" name="pekerjaan"
                                    class="form-input @error('pekerjaan') is-error @enderror"
@@ -204,10 +204,10 @@
                             @error('pekerjaan') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 8. Alamat --}}
+                        {{-- 9. Alamat --}}
                         <div class="form-group form-group--full">
                             <label class="form-label" for="alamat">
-                                <span class="field-num">8</span> Alamat Lengkap <span class="required">*</span>
+                                <span class="field-num">9</span> Alamat Lengkap <span class="required">*</span>
                             </label>
                             <textarea id="alamat" name="alamat" rows="3"
                                       class="form-input form-input--textarea @error('alamat') is-error @enderror"
@@ -216,10 +216,10 @@
                             @error('alamat') <p class="form-error">{{ $message }}</p> @enderror
                         </div>
 
-                        {{-- 9. Keperluan --}}
+                        {{-- 10. Keperluan --}}
                         <div class="form-group form-group--full">
                             <label class="form-label" for="keperluan">
-                                <span class="field-num">9</span> Keperluan <span class="required">*</span>
+                                <span class="field-num">10</span> Keperluan <span class="required">*</span>
                             </label>
                             <input type="text" id="keperluan" name="keperluan"
                                    class="form-input @error('keperluan') is-error @enderror"

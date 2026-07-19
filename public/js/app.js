@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ---- Navbar: mobile toggle ----
     const navToggle = document.getElementById('navToggle');
-    const navMenu   = document.getElementById('navMenu');
+    const navMenu = document.getElementById('navMenu');
 
     function closeNavMenu() {
         if (navMenu) navMenu.classList.remove('open');
@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---- Profil Desa: Tab switching (supports both .profil__tab-btn and .p-tab) ----
-    const tabBtns   = document.querySelectorAll('.profil__tab-btn, .p-tab');
+    const tabBtns = document.querySelectorAll('.profil__tab-btn, .p-tab');
     const tabPanels = document.querySelectorAll('.profil__tab-panel, .p-panel');
     tabBtns.forEach(btn => {
         btn.addEventListener('click', () => {
@@ -93,13 +93,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function animateCounter(el) {
-        const text  = el.textContent.trim();
+        const text = el.textContent.trim();
         const numMatch = text.match(/[\d,]+/);
         if (!numMatch) return;
-        const raw   = numMatch[0].replace(',', '');
+        const raw = numMatch[0].replace(',', '');
         if (isNaN(raw)) return;
-        const end   = parseInt(raw);
-        const dur   = 1200;
+        const end = parseInt(raw);
+        const dur = 1200;
         const start = performance.now();
         const suffix = text.replace(numMatch[0], '');
         const prefix = text.indexOf(numMatch[0]) > 0 ? text.substring(0, text.indexOf(numMatch[0])) : '';
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const tick = (now) => {
             const prog = Math.min((now - start) / dur, 1);
             const ease = 1 - Math.pow(1 - prog, 3);
-            const val  = Math.floor(ease * end);
+            const val = Math.floor(ease * end);
             el.textContent = prefix + val.toLocaleString('id-ID') + suffix;
             if (prog < 1) requestAnimationFrame(tick);
         };
@@ -148,10 +148,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---- Admin: mobile sidebar toggle ----
-    const adminSidebarToggle  = document.getElementById('adminSidebarToggle');
+    const adminSidebarToggle = document.getElementById('adminSidebarToggle');
     const adminSidebarHamburger = document.getElementById('adminSidebarHamburger');
-    const adminSidebar        = document.querySelector('.admin-sidebar');
-    const adminOverlay        = document.getElementById('adminSidebarOverlay');
+    const adminSidebar = document.querySelector('.admin-sidebar');
+    const adminOverlay = document.getElementById('adminSidebarOverlay');
 
     function toggleAdminSidebar() {
         const isOpen = adminSidebar && adminSidebar.classList.toggle('open');
