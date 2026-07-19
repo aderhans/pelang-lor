@@ -197,10 +197,10 @@
                 Unduh PDF
             </a>
             
-            <a id="btn-jpg" href="{{ route('surat.jpg', ['id' => $data['id'], 'ttd' => $ttd ?? 'kades']) }}" class="btn-maroon-hero">
+            <button id="btn-jpg" type="button" onclick="downloadAsJpg()" class="btn-maroon-hero">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 Unduh JPG
-            </a>
+            </button>
 
             @if(!auth()->guard('web')->check() && request('from') != 'riwayat')
             <a href="{{ route('surat.edit', $data['id']) }}" class="btn-back" style="margin-left:auto;">
@@ -226,9 +226,50 @@
 </section>
 
 @endsection
-
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+    // ---------------------------------------------------------------
+    // Unduh JPG (Client-side via html2canvas — tidak butuh Node.js)
+    // ---------------------------------------------------------------
+    async function downloadAsJpg() {
+        const btn = document.getElementById('btn-jpg');
+        const suratEl = document.getElementById('suratPreview');
+        if (!suratEl) { alert('Elemen surat tidak ditemukan.'); return; }
+
+        const originalHTML = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Memproses...';
+
+        try {
+            const canvas = await html2canvas(suratEl, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: false,
+                backgroundColor: '#ffffff',
+                logging: false,
+                imageTimeout: 15000,
+            });
+
+            const imgData = canvas.toDataURL('image/jpeg', 0.95);
+            const nomorSurat = '{{ preg_replace("/[^a-zA-Z0-9]/", "_", $data["nomor_surat"]) }}';
+            const filename = 'Surat_' + nomorSurat + '.jpg';
+
+            const a = document.createElement('a');
+            a.href = imgData;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } catch (err) {
+            console.error('JPG error:', err);
+            alert('Gagal mengunduh JPG: ' + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = originalHTML;
+        }
+    }
+
     function setTtd(value) {
         // Update DOM Labels (Styling)
         const btnKades = document.getElementById('btnKades');
@@ -264,21 +305,16 @@
             previewNama.innerHTML = '<strong><u>DIDIK SUPRIYANTO</u></strong>';
         }
 
-        // Update Button URLs
+        // Update Button URL (PDF only, JPG sekarang client-side)
         const btnPdf = document.getElementById('btn-pdf');
-        const btnJpg = document.getElementById('btn-jpg');
-        
         if(btnPdf) {
             const url = new URL(btnPdf.href);
             url.searchParams.set('ttd', value);
             btnPdf.href = url.toString();
         }
-        
-        if(btnJpg) {
-            const urlJpg = new URL(btnJpg.href);
-            urlJpg.searchParams.set('ttd', value);
-            btnJpg.href = urlJpg.toString();
-        }
     }
 </script>
+<style>
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 @endpush
