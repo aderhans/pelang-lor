@@ -17,19 +17,35 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---- Navbar: mobile toggle ----
     const navToggle = document.getElementById('navToggle');
     const navMenu   = document.getElementById('navMenu');
+
+    function closeNavMenu() {
+        if (navMenu) navMenu.classList.remove('open');
+        if (navToggle) navToggle.classList.remove('open');
+        // Never lock body scroll — menu is static overlay
+    }
+
     if (navToggle && navMenu) {
-        navToggle.addEventListener('click', () => {
+        navToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             const open = navMenu.classList.toggle('open');
             navToggle.classList.toggle('open', open);
-            document.body.style.overflow = open ? 'hidden' : '';
         });
+
+        // Auto-close when user scrolls the page
+        window.addEventListener('scroll', () => {
+            if (navMenu.classList.contains('open')) closeNavMenu();
+        }, { passive: true });
+
+        // Close when clicking outside the navbar area
+        document.addEventListener('click', (e) => {
+            if (!navMenu.contains(e.target) && !navToggle.contains(e.target)) {
+                closeNavMenu();
+            }
+        });
+
         // Close on link click
         navMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                navMenu.classList.remove('open');
-                navToggle.classList.remove('open');
-                document.body.style.overflow = '';
-            });
+            link.addEventListener('click', closeNavMenu);
         });
     }
 

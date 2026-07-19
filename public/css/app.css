@@ -1787,6 +1787,7 @@ ul {
 .form-input {
     box-sizing: border-box !important;
     width: 100%;
+    min-width: 0; /* Prevent date/select from overflowing grid cell */
     padding: 11px 16px;
     border: 1.5px solid var(--n200);
     border-radius: var(--r-md);
@@ -2353,22 +2354,23 @@ ul {
         top: var(--nav-h);
         left: 0;
         right: 0;
-        bottom: 0;
+        /* No bottom: 0 — height is auto (just menu items) */
         background: linear-gradient(160deg, rgba(45, 0, 0, 0.98) 0%, rgba(26, 5, 5, 0.99) 100%);
         backdrop-filter: blur(30px);
         -webkit-backdrop-filter: blur(30px);
         flex-direction: column;
         align-items: stretch;
         gap: 0;
-        padding: 28px 20px 48px;
+        padding: 16px 20px 24px;
         z-index: 999;
-        overflow-y: auto;
+        overflow: hidden; /* No scroll inside menu */
         border-top: 1px solid rgba(185, 28, 58, 0.3);
-        animation: menuSlideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        animation: menuSlideDown 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @keyframes menuSlideDown {
-        from { opacity: 0; transform: translateY(-12px); }
+        from { opacity: 0; transform: translateY(-8px); }
         to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -2764,6 +2766,12 @@ ul {
         box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100%;
+        min-width: 0; /* Prevent date input from overflowing grid */
+    }
+
+    input[type="date"].form-input {
+        min-width: 0;
+        width: 100% !important;
     }
 
     .preview-actions {
