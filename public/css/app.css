@@ -2724,10 +2724,10 @@ ul {
 
     /* Scale A4 surat preview to fit mobile */
     .surat-preview {
-        max-width: 100%;
-        padding: 16px;
-        font-size: 10pt;
-        min-height: auto;
+        width: 794px !important;
+        max-width: none !important;
+        zoom: calc((100vw - 32px) / 794);
+        margin: 0 auto 30px;
         box-shadow: 0 4px 16px rgba(0,0,0,0.1);
     }
 
