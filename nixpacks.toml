@@ -1,16 +1,29 @@
 # Railway deployment config (nixpacks)
 # PHP auto-detected from composer.json (^8.4)
-# nodejs & chromium dibutuhkan untuk fitur Unduh JPG via Browsershot
+# Gunakan aptPkgs (Ubuntu/Debian) bukan nixPkgs karena runtime Railway adalah Ubuntu
 
 [phases.setup]
-nixPkgs = ["nodejs_20", "chromium"]
+aptPkgs = [
+  "nodejs",
+  "npm",
+  "chromium",
+  "libgconf-2-4",
+  "libnss3",
+  "libxss1",
+  "libatk-bridge2.0-0",
+  "libgtk-3-0",
+  "ca-certificates",
+  "fonts-liberation",
+  "libappindicator3-1",
+  "libasound2",
+  "libnspr4",
+  "libxrandr2",
+  "xdg-utils"
+]
 
 [phases.build]
 cmds = [
-  "composer install --no-dev --optimize-autoloader --no-interaction",
-  "ln -sf $(which node) /usr/local/bin/node || true",
-  "ln -sf $(which npm) /usr/local/bin/npm || true",
-  "ln -sf $(which chromium) /usr/local/bin/chromium || true"
+  "composer install --no-dev --optimize-autoloader --no-interaction"
 ]
 
 [start]
