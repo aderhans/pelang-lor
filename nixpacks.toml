@@ -1,9 +1,6 @@
 # Railway deployment config (nixpacks)
 # PHP auto-detected from composer.json (^8.4)
-#
-# PENTING: Jangan jalankan config:cache/route:cache di build phase!
-# Variabel MYSQL dari Railway hanya tersedia saat RUNTIME, bukan saat build.
-# Jika di-cache saat build, Laravel akan menyimpan 127.0.0.1 sebagai host DB.
+# nodejs & chromium dibutuhkan untuk fitur Unduh JPG via Browsershot
 
 [phases.setup]
 nixPkgs = ["nodejs_20", "chromium"]
@@ -11,12 +8,10 @@ nixPkgs = ["nodejs_20", "chromium"]
 [phases.build]
 cmds = [
   "composer install --no-dev --optimize-autoloader --no-interaction",
-  # Symlink agar node/npm/chromium bisa ditemukan PHP via shell_exec saat runtime
   "ln -sf $(which node) /usr/local/bin/node || true",
   "ln -sf $(which npm) /usr/local/bin/npm || true",
   "ln -sf $(which chromium) /usr/local/bin/chromium || true"
 ]
 
 [start]
-# Cetak semua env vars (disaring untuk MYSQL) untuk memastikan variabel Railway benar-benar ada
-cmd = "env | grep -i mysql; rm -f bootstrap/cache/config.php bootstrap/cache/routes.php bootstrap/cache/services.php || true && php artisan storage:link --force 2>&1 || true && php artisan migrate --force --verbose && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "rm -f bootstrap/cache/config.php bootstrap/cache/routes.php bootstrap/cache/services.php || true && php artisan storage:link --force || true && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=$PORT"
