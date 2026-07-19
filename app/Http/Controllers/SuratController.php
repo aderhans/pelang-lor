@@ -231,7 +231,7 @@ class SuratController extends Controller
         // Return the exact same view as PDF, but as HTML
         return view('pages.surat.pdf', compact('data', 'jabatan', 'nama', 'logoImagePath'));
     }
-}
+
     // ---------------------------------------------------------------
     // JPG (Browsershot)
     // ---------------------------------------------------------------
